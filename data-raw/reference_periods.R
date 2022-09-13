@@ -7,6 +7,7 @@ reference_periods <-
     names_to = "reference_period",
     values_to = "year",
     cols = everything()
-  )
+  ) %>%
+    arrange(reference_period)
 
 usethis::use_data(reference_periods, overwrite = TRUE)

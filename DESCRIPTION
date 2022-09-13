@@ -21,7 +21,8 @@ Imports:
     magrittr,
     stringr,
     tidyr,
-    dtplyr
+    dtplyr,
+    tibble
 Depends: 
     R (>= 2.10)
 LazyData: true
