@@ -1,5 +1,5 @@
 add_indicator_3_2 <- function(x, y) {
-  indicator_3.2 <- y %>%
+  indicator_32 <- y %>%
     group_by(
       well_id,
       climate_model_name,
@@ -29,7 +29,7 @@ add_indicator_3_2 <- function(x, y) {
       .groups = "drop"
     ) %>%
     mutate(
-      indicator_3.2 = month_mean %>%
+      indicator_32 = month_mean %>%
         asin() %>%
         BBmisc::normalize(method = "range", range = c(1, 12))
     ) %>%
@@ -37,7 +37,7 @@ add_indicator_3_2 <- function(x, y) {
 
   x %>%
     left_join(
-      indicator_3.2,
+      indicator_32,
       by = c("well_id", "climate_model_name", "reference_period")
     )
 }

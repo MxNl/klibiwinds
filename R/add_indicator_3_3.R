@@ -1,5 +1,5 @@
 add_indicator_3_3 <- function(x, y) {
-  indicator_3.3 <- y %>%
+  indicator_33 <- y %>%
     # slice_sample(prop = 0.01) %>%
     group_by(
       well_id,
@@ -19,11 +19,11 @@ add_indicator_3_3 <- function(x, y) {
     ) %>%
     nest() %>%
     ungroup() %>%
-    rename(indicator_3.3 = data)
+    rename(indicator_33 = data)
 
   x %>%
     left_join(
-      indicator_3.3,
+      indicator_33,
       by = c("well_id", "climate_model_name", "reference_period")
     )
 }

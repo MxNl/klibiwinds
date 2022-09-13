@@ -1,12 +1,12 @@
 add_indicator_1_3 <- function(x, y) {
-  indicator_1.3 <- y %>%
+  indicator_13 <- y %>%
     group_by(well_id, climate_model_name, reference_period) %>%
-    summarise(indicator_1.3 = mean(gwl_projections, na.rm = TRUE), .groups = "drop") %>%
+    summarise(indicator_13 = mean(gwl_projections, na.rm = TRUE), .groups = "drop") %>%
     ungroup()
 
   x %>%
     left_join(
-      indicator_1.3,
+      indicator_13,
       by = c("well_id", "climate_model_name", "reference_period")
     )
 }
