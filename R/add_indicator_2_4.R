@@ -1,4 +1,4 @@
-add_indicator_2_4 <- function(x, y, selected_reference_period = "Z2") {
+add_indicator_2_4 <- function(x, y, selected_reference_period = "Z1") {
 
   if (!("indicator_16" %in% names(x))) {
     x_dep <- x |>

@@ -1,3 +1,10 @@
 ^klibiwinds\.Rproj$
 ^\.Rproj\.user$
 ^data-raw$
+^README\.Rmd$
+^.idea$
+^KontrolldateiSimulationslaeufe.xlsx$
+^Klibiw7_Indikatoren.R$
+^klibiw7_indicators.R$
+^20220825_KliBiW7_Liste_Indikatoren_v0.docx$
+^LICENSE\.md$

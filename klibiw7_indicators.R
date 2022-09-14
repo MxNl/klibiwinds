@@ -29,10 +29,3 @@ indicators_summary %>% # distinct(climate_model_name)
   geom_histogram(stat = "count")
 
 # 6 * 2 + 1 = 13
-indicators_summary %>%
-  filter(well_id == "200000532")
-
-reference_periods %>%
-  group_by(reference_period) %>%
-
-
