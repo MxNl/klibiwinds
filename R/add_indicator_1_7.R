@@ -1,22 +1,22 @@
 add_indicator_1_7 <- function(x, y) {
-  indicator_17 <- y %>%
-    group_by(
+  indicator_17 <- y |>
+    dplyr::group_by(
       well_id,
       climate_model_name,
       reference_period,
       year = year(date)
-    ) %>%
-    summarise(
-      annual_amplitude = max(gwl_projections, na.rm = TRUE) - min(gwl_projections, na.rm = TRUE),
+    ) |>
+    dplyr::summarise(
+      annual_amplitude = max(gwl, na.rm = TRUE) - min(gwl, na.rm = TRUE),
       .groups = "drop_last"
-    ) %>%
-    summarise(
+    ) |>
+    dplyr::summarise(
       indicator_17 = mean(annual_amplitude, na.rm = TRUE),
       .groups = "drop"
     )
 
-  x %>%
-    left_join(
+  x |>
+    dplyr::left_join(
       indicator_17,
       by = c("well_id", "climate_model_name", "reference_period")
     )

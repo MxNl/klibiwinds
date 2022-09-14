@@ -1,45 +1,45 @@
 add_indicator_2_3 <- function(x, y, selected_reference_period = "Z2") {
 
   if (!("indicator_15" %in% names(x))) {
-    x_dep <- x %>%
-      select(-contains("indicator_")) %>%
-      add_indicator_1_5(y) %>%
-      filter(reference_period == selected_reference_period) %>%
-      select(-reference_period) %>%
-      rename(indicator_15_z1 = indicator_15)
+    x_dep <- x |>
+      dplyr::select(-contains("indicator_")) |>
+      add_indicator_1_5(y) |>
+      dplyr::filter(reference_period == selected_reference_period) |>
+      dplyr::select(-reference_period) |>
+      dplyr::rename(indicator_15_z1 = indicator_15)
   } else {
-    x_dep <- x %>%
-      select(
+    x_dep <- x |>
+      dplyr::select(
         well_id,
         climate_model_name,
-        indicator_15) %>%
-      rename(indicator_15_z1 = indicator_15)
+        indicator_15) |>
+      dplyr::rename(indicator_15_z1 = indicator_15)
   }
 
-  indicator_23 <- y %>%
-    left_join(
+  indicator_23 <- y |>
+    dplyr::left_join(
       x_dep,
       by = c("well_id", "climate_model_name")
-    ) %>%
-    group_by(
+    ) |>
+    dplyr::group_by(
       well_id,
       climate_model_name,
       reference_period,
       year = year(date)
-    ) %>%
-    filter(gwl_projections < indicator_15_z1) %>%
-    summarise(
+    ) |>
+    dplyr::filter(gwl < indicator_15_z1) |>
+    dplyr::summarise(
       mo_gw_low = n(),
       .groups = "drop_last"
-    ) %>%
-    filter(mo_gw_low >= 1) %>%
-    summarise(
+    ) |>
+    dplyr::filter(mo_gw_low >= 1) |>
+    dplyr::summarise(
       indicator_23 = n(),
       .groups = "drop"
     )
 
-  x %>%
-    left_join(
+  x |>
+    dplyr::left_join(
       indicator_23,
       by = c("well_id", "climate_model_name", "reference_period")
     )

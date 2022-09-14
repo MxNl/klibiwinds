@@ -17,10 +17,10 @@ indicators <-
       "3.2	Mittl. Eintrittszeitpunkt des Jahresminimums",
       "3.3	Mittlerer Jahresgang"
     )
-  ) %>%
-    separate(indicator_id, sep = "\\t", into = c("id", "name")) %>%
-    mutate(id = as.numeric(id)) %>%
-    mutate(class = case_when(
+  ) |>
+    separate(indicator_id, sep = "\\t", into = c("id", "name")) |>
+    dplyr::mutate(id = as.numeric(id)) |>
+    dplyr::mutate(class = case_when(
       id < 2 ~ "allgemein",
       id < 3 ~ "niedrig und hoechststand",
       id < 4 ~ "saisonalitaet"
