@@ -4,7 +4,7 @@ add_indicator_1_7 <- function(x, y) {
       well_id,
       climate_model_name,
       reference_period,
-      year = year(date)
+      year = lubridate::year(date)
     ) |>
     dplyr::summarise(
       annual_amplitude = max(gwl, na.rm = TRUE) - min(gwl, na.rm = TRUE),

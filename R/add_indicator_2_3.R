@@ -25,7 +25,7 @@ add_indicator_2_3 <- function(x, y, selected_reference_period = "Z1") {
       well_id,
       climate_model_name,
       reference_period,
-      year = year(date)
+      year = lubridate::year(date)
     ) |>
     dplyr::filter(gwl < indicator_15_z1) |>
     dplyr::summarise(

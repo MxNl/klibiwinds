@@ -24,4 +24,75 @@ The goal of klibiwinds is to provide the required functionality to calculate the
 
 You can install the development version of klibiwinds from [GitHub](https://github.com/) with:
 
+```{r}
+# install.packages("devtools")
+# devtools::install_github("MxNl/klibiwinds")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+Load the package `klibiwinds`
+```{r}
+library(klibiwinds)
+library(ggplot2)
+library(summarytools)
+library(dplyr)
+```
+
+We use the fake data set `gwl_data_fake` included in this package to demonstrate the following examples
+```{r}
+gwl_fake_data
+```
+
+Or check out the structure and the content using a summary of the dataframe
+```{r}
+gwl_fake_data |> 
+  dfSummary()
+```
+
+This fake data set also shows the structure, that you need to bring your data into:
+
+ - one column with the name `well_id` containing an identifier for the observation well
+ - one column with the name `climate_model_name` containing an identifier for the climate model. Note: historical (not predicted) data has the value "historical" in this column
+ - one column with the name `date` containing the dates
+ - one column with the name `gwl` containing the groundwater levels
+
+**Note: This dataframe is the only basis for the following processing steps. So before you continue here with your own data, make sure that your dataframe is brought into the same shape and structure!**
+
+Now we can add a column containing the reference period for each corresponding year by using the function `add_reference_period_column()`
+```{r }
+gwl_with_ref_periods <- gwl_fake_data |>
+  add_reference_period_column(reference_periods_fake)
+```
+This function also drops all rows that don't belong to reference period as they are not used in the following steps.
+
+Then, we can reduce this dataframe in long format to a dataframe where we have a distinct combination of the columns `well_id`, `climate_model_name` and `reference_period` using the function `make_summary_table()`
+```{r}
+indicators_summary <- gwl_with_ref_periods |>
+  make_summary_table()
+```
+
+Check out the result
+```{r}
+indicators_summary
+```
+
+Then, the final step is to calculate the indicators using the function `add_indicators_all()`
+```{r}
+indicators_summary <- indicators_summary |> 
+  add_indicators_all(gwl_with_ref_periods)
+```
+Again, we can check out the result
+```{r}
+indicators_summary
+```
+
+This dataframe contains a list column with nested dataframes for the indicator 3.3 because this indicator comprises multiple values. this column can be unnested using the function `unnest_indicator_3_3()`
+```{r}
+indicators_summary |> 
+  unnest_indicator_3_3()
+```
+
 

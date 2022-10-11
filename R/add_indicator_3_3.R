@@ -5,7 +5,7 @@ add_indicator_3_3 <- function(x, y) {
       well_id,
       climate_model_name,
       reference_period,
-      month = month(date)
+      month = lubridate::month(date)
     ) |>
     dplyr::summarise(
       # quantile_df(gwl, probs = c(0.05, 0.15)),
@@ -17,7 +17,7 @@ add_indicator_3_3 <- function(x, y) {
       climate_model_name,
       reference_period
     ) |>
-    nest() |>
+    tidyr::nest() |>
     dplyr::ungroup() |>
     dplyr::rename(indicator_33 = data)
 

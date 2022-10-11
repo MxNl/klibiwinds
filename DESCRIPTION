@@ -24,7 +24,8 @@ Imports:
     dtplyr,
     tibble,
     cli,
-    ggplot2
+    ggplot2,
+    psych
 Depends: 
     R (>= 4.0)
 LazyData: true
