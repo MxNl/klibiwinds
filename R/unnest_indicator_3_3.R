@@ -1,3 +1,9 @@
+#' unnest_indicator_3_3
+#'
+#' Unnest the tibble column of indicator 3.3
+#'
+#' @param x A summary table (tibble) with the nested indicator 3.3
+#'
 #' @export
 unnest_indicator_3_3 <- function(x) {
   x |>

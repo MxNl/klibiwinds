@@ -25,7 +25,10 @@ Imports:
     tibble,
     cli,
     ggplot2,
-    psych
+    psych,
+    data.table,
+    janitor,
+    forcats
 Depends: 
     R (>= 4.0)
 LazyData: true
