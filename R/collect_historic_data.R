@@ -5,7 +5,7 @@ collect_historic_data <- function(filepath) {
   purrr::map_dfr(
     cli::cli_progress_along(
       files,
-      name = "collecting historical data (1/3): ",
+      name = "collecting observed data (1/3): ",
       clear = FALSE
     ),
     ~ data.table::fread(files[[.x]], sep = ";")
@@ -28,6 +28,6 @@ collect_historic_data <- function(filepath) {
     dplyr::arrange(date) |>
     dplyr::ungroup() |>
     tidyr::drop_na(gwl) |>
-    dplyr::mutate(climate_model_name = "historical") |>
+    dplyr::mutate(climate_model_name = "observed") |>
     dplyr::as_tibble()
 }

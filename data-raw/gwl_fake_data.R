@@ -1,5 +1,5 @@
 gwl_fake <- 1:2
-climate_model_name_fake <- c("climate_model_1", "climate_model_2", "historical")
+climate_model_name_fake <- c("climate_model_1", "climate_model_2", "observed")
 well_id_fake <- c(1000:1001) |> as.character()
 years_fake <- 1980:2023
 months_fake <- 1:12

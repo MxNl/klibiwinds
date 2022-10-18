@@ -55,7 +55,7 @@ gwl_fake_data |>
 This fake data set also shows the structure, that you need to bring your data into:
 
  - one column with the name `well_id` containing an identifier for the observation well
- - one column with the name `climate_model_name` containing an identifier for the climate model. Note: historical (not predicted) data has the value "historical" in this column
+ - one column with the name `climate_model_name` containing an identifier for the climate model. Note: observed (not predicted) data has the value "observed" in this column
  - one column with the name `date` containing the dates
  - one column with the name `gwl` containing the groundwater levels
 

@@ -107,8 +107,8 @@ data into:
 -   one column with the name `well_id` containing an identifier for the
     observation well
 -   one column with the name `climate_model_name` containing an
-    identifier for the climate model. Note: historical (not predicted)
-    data has the value “historical” in this column
+    identifier for the climate model. Note: observed (not predicted)
+    data has the value “observed” in this column
 -   one column with the name `date` containing the dates
 -   one column with the name `gwl` containing the groundwater levels
 
@@ -141,7 +141,7 @@ Check out the result
 
 ``` r
 indicators_summary
-#> # A tibble: 10 x 3
+#> # A tibble: 12 x 3
 #>    well_id climate_model_name reference_period
 #>    <chr>   <chr>              <chr>           
 #>  1 1000    climate_model_1    Z1              
@@ -149,11 +149,13 @@ indicators_summary
 #>  3 1000    climate_model_2    Z1              
 #>  4 1000    climate_model_2    Z2              
 #>  5 1000    historical         Z1              
-#>  6 1001    climate_model_1    Z1              
-#>  7 1001    climate_model_1    Z2              
-#>  8 1001    climate_model_2    Z1              
-#>  9 1001    climate_model_2    Z2              
-#> 10 1001    historical         Z1
+#>  6 1000    historical         Z2              
+#>  7 1001    climate_model_1    Z1              
+#>  8 1001    climate_model_1    Z2              
+#>  9 1001    climate_model_2    Z1              
+#> 10 1001    climate_model_2    Z2              
+#> 11 1001    historical         Z1              
+#> 12 1001    historical         Z2
 ```
 
 Then, the final step is to calculate the indicators using the function
@@ -168,7 +170,7 @@ Again, we can check out the result
 
 ``` r
 indicators_summary
-#> # A tibble: 10 x 18
+#> # A tibble: 12 x 18
 #>    well_id climate_mod~1 refer~2 indic~3 indic~4 indic~5 indic~6 indic~7 indic~8
 #>    <chr>   <chr>         <chr>     <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
 #>  1 1000    climate_mode~ Z1            1       2     1.5   0.511       1       2
@@ -176,17 +178,19 @@ indicators_summary
 #>  3 1000    climate_mode~ Z1            2       3     2.5   0.511       2       3
 #>  4 1000    climate_mode~ Z2            2       3     2.5   0.511       2       3
 #>  5 1000    historical    Z1            3       4     3.5   0.511       3       4
-#>  6 1001    climate_mode~ Z1            4       5     4.5   0.511       4       5
-#>  7 1001    climate_mode~ Z2            4       5     4.5   0.511       4       5
-#>  8 1001    climate_mode~ Z1            5       6     5.5   0.511       5       6
-#>  9 1001    climate_mode~ Z2            5       6     5.5   0.511       5       6
-#> 10 1001    historical    Z1            6       7     6.5   0.511       6       7
+#>  6 1000    historical    Z2            3       4     3.5   0.511       3       4
+#>  7 1001    climate_mode~ Z1            4       5     4.5   0.511       4       5
+#>  8 1001    climate_mode~ Z2            4       5     4.5   0.511       4       5
+#>  9 1001    climate_mode~ Z1            5       6     5.5   0.511       5       6
+#> 10 1001    climate_mode~ Z2            5       6     5.5   0.511       5       6
+#> 11 1001    historical    Z1            6       7     6.5   0.511       6       7
+#> 12 1001    historical    Z2            6       7     6.5   0.511       6       7
 #> # ... with 9 more variables: indicator_17 <dbl>, indicator_18 <dbl>,
 #> #   indicator_21 <int>, indicator_22 <int>, indicator_23 <int>,
-#> #   indicator_24 <int>, mean.x <dbl>, mean.y <dbl>, indicator_33 <list>, and
-#> #   abbreviated variable names 1: climate_model_name, 2: reference_period,
-#> #   3: indicator_11, 4: indicator_12, 5: indicator_13, 6: indicator_14,
-#> #   7: indicator_15, 8: indicator_16
+#> #   indicator_24 <int>, indicator_31 <dbl>, indicator_32 <dbl>,
+#> #   indicator_33 <list>, and abbreviated variable names 1: climate_model_name,
+#> #   2: reference_period, 3: indicator_11, 4: indicator_12, 5: indicator_13,
+#> #   6: indicator_14, 7: indicator_15, 8: indicator_16
 ```
 
 This dataframe contains a list column with nested dataframes for the
@@ -196,7 +200,7 @@ column can be unnested using the function `unnest_indicator_3_3()`
 ``` r
 indicators_summary |> 
   unnest_indicator_3_3()
-#> # A tibble: 10 x 51
+#> # A tibble: 12 x 29
 #>    well_id climate_mod~1 refer~2 indic~3 indic~4 indic~5 indic~6 indic~7 indic~8
 #>    <chr>   <chr>         <chr>     <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
 #>  1 1000    climate_mode~ Z1            1       2     1.5   0.511       1       2
@@ -204,16 +208,18 @@ indicators_summary |>
 #>  3 1000    climate_mode~ Z1            2       3     2.5   0.511       2       3
 #>  4 1000    climate_mode~ Z2            2       3     2.5   0.511       2       3
 #>  5 1000    historical    Z1            3       4     3.5   0.511       3       4
-#>  6 1001    climate_mode~ Z1            4       5     4.5   0.511       4       5
-#>  7 1001    climate_mode~ Z2            4       5     4.5   0.511       4       5
-#>  8 1001    climate_mode~ Z1            5       6     5.5   0.511       5       6
-#>  9 1001    climate_mode~ Z2            5       6     5.5   0.511       5       6
-#> 10 1001    historical    Z1            6       7     6.5   0.511       6       7
-#> # ... with 42 more variables: indicator_17 <dbl>, indicator_18 <dbl>,
+#>  6 1000    historical    Z2            3       4     3.5   0.511       3       4
+#>  7 1001    climate_mode~ Z1            4       5     4.5   0.511       4       5
+#>  8 1001    climate_mode~ Z2            4       5     4.5   0.511       4       5
+#>  9 1001    climate_mode~ Z1            5       6     5.5   0.511       5       6
+#> 10 1001    climate_mode~ Z2            5       6     5.5   0.511       5       6
+#> 11 1001    historical    Z1            6       7     6.5   0.511       6       7
+#> 12 1001    historical    Z2            6       7     6.5   0.511       6       7
+#> # ... with 20 more variables: indicator_17 <dbl>, indicator_18 <dbl>,
 #> #   indicator_21 <int>, indicator_22 <int>, indicator_23 <int>,
-#> #   indicator_24 <int>, indicator_33_mean.x_month1 <dbl>,
-#> #   indicator_33_mean.x_month2 <dbl>, indicator_33_mean.x_month3 <dbl>,
-#> #   indicator_33_mean.x_month4 <dbl>, indicator_33_mean.x_month5 <dbl>,
-#> #   indicator_33_mean.x_month6 <dbl>, indicator_33_mean.x_month7 <dbl>,
-#> #   indicator_33_mean.x_month8 <dbl>, indicator_33_mean.x_month9 <dbl>, ...
+#> #   indicator_24 <int>, indicator_31 <dbl>, indicator_32 <dbl>,
+#> #   indicator_33_mean_month1 <dbl>, indicator_33_mean_month2 <dbl>,
+#> #   indicator_33_mean_month3 <dbl>, indicator_33_mean_month4 <dbl>,
+#> #   indicator_33_mean_month5 <dbl>, indicator_33_mean_month6 <dbl>,
+#> #   indicator_33_mean_month7 <dbl>, indicator_33_mean_month8 <dbl>, ...
 ```

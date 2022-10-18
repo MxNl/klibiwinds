@@ -21,6 +21,6 @@ add_reference_period_column <- function(x, reference_period) {
     dplyr::arrange(well_id, climate_model_name, date) |>
     dplyr::relocate(well_id, climate_model_name, date, reference_period) |>
     dplyr::filter(!(lubridate::year(date) > max_year_historical &
-      climate_model_name == "historical")) |>
+      climate_model_name == "observed")) |>
     tidyr::drop_na(reference_period)
 }

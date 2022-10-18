@@ -8,11 +8,13 @@ add_indicator_2_2 <- function(x, y, selected_reference_period = "Z1") {
       dplyr::rename(indicator_16_z1 = indicator_16)
   } else {
     x_dep <- x |>
+      dplyr::filter(reference_period == selected_reference_period) %>%
       dplyr::select(
         well_id,
         climate_model_name,
-        indicator_16) |>
-      dplyr::rename(indicator_16_z1 = indicator_16)
+        indicator_16
+      ) |>
+        dplyr::rename(indicator_16_z1 = indicator_16)
   }
 
   indicator_22 <- y |>
@@ -25,10 +27,7 @@ add_indicator_2_2 <- function(x, y, selected_reference_period = "Z1") {
       climate_model_name,
       reference_period
     ) |>
-    dplyr::filter(gwl > indicator_16_z1) |>
-    count(
-      name = "indicator_22"
-    ) |>
+    summarise(indicator_22 = sum(gwl > indicator_16_z1)) |>
     dplyr::ungroup()
 
   x |>
