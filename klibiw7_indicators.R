@@ -86,10 +86,36 @@ p5 <- plot_data |>
 
 list(p1, p2, p3, p4, p5) |>
   purrr::map2(
-    c("data_export/plot_distribution_vs") |> paste(1:5, sep = "_") |> paste0(".png"),
+    c("data_export/plot_distribution_vs") |> paste(1:5, sep = "_") |> paste0(".pdf"),
     ~ .x |> ggplot2::ggsave(
-      filename = .y, device = "png",
+      filename = .y, device = "pdf",
       scale = 1.7, units = "cm", width = 10, height = 8, dpi = 300
+    )
+  )
+
+
+########## Plot timeseries heatmap vs
+plot_data <- data_gwl |>
+  filter_criterion_model_performance() |>
+  add_reference_period_column() |>
+  filter_criterion_incomplete_z1_period() |>
+  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp"))
+
+p1 <- plot_data |>
+  make_plot_timeseries_heatmap(region_natur)
+p2 <- plot_data |>
+  make_plot_timeseries_heatmap(region_climate)
+p3 <- plot_data |>
+  make_plot_timeseries_heatmap(depth_to_gwl)
+p4 <- plot_data |>
+  make_plot_timeseries_heatmap(screen_top)
+
+list(p1, p2, p3, p4) |>
+  purrr::map2(
+    c("data_export/plot_timeseries_heatmap") |> paste(1:4, sep = "_") |> paste0(".pdf"),
+    ~ .x |> ggplot2::ggsave(
+      filename = .y, device = "pdf",
+      scale = 1.8, units = "cm", width = 10, height = 10, dpi = 300
     )
   )
 
@@ -279,33 +305,6 @@ rayshader::render_snapshot(clear = TRUE)
 
 
 
-
-########## Plot timeseries heatmap vs
-plot_data <- data_gwl |>
-  filter_criterion_model_performance() |>
-  add_reference_period_column() |>
-  filter_criterion_incomplete_z1_period() |>
-  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp"))
-
-p1 <- plot_data |>
-  make_plot_timeseries_heatmap(region_natur)
-p2 <- plot_data |>
-  make_plot_timeseries_heatmap(region_climate)
-p3 <- plot_data |>
-  make_plot_timeseries_heatmap(depth_to_gwl)
-p4 <- plot_data |>
-  make_plot_timeseries_heatmap(screen_top)
-
-list(p1, p2, p3, p4) |>
-  purrr::map2(
-    c("data_export/plot_timeseries_heatmap") |> paste(1:4, sep = "_") |> paste0(".png"),
-    ~ .x |> ggplot2::ggsave(
-      filename = .y, device = "png",
-      scale = 1.8, units = "cm", width = 10, height = 10, dpi = 300
-    )
-  )
-
-
 ########## Plot special single timeseries heatmap
 selection_well_ids <- data_gwl |>
   filter_criterion_model_performance() |>
@@ -385,7 +384,7 @@ p1 <- plot_data |>
 
 p1 |>
   ggplot2::ggsave(
-    filename = "data_export/plot_timeseries_heatmap_single.png", device = "png",
+    filename = "data_export/plot_timeseries_heatmap_single.pdf", device = "pdf",
     scale = 1.8, units = "cm", width = 3, height = 10, dpi = 300
   )
 
