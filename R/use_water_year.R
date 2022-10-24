@@ -1,11 +1,8 @@
-#' Title
+#' use_water_year
 #'
-#' @param x
+#' @param x text...
 #'
 #' @return
-#' @export
-#'
-
 #' @export
 use_water_year <- function(x) {
   x |>

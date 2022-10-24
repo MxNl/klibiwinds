@@ -20,6 +20,7 @@ Imports:
     BBmisc,
     patchwork,
     readr,
+    sf,
     dplyr,
     purrr,
     magrittr,

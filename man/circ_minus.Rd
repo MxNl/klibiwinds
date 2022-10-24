@@ -11,7 +11,9 @@ circ_minus(x, y, int, type = c("minusPiPlusPi", "ZeroPlus2Pi"))
 
 \item{y}{A numeric vector or array.}
 
-\item{circular}{}
+\item{int}{text...}
+
+\item{type}{text...}
 }
 \description{
 Calculate the circular subtraction \var{x - y}

@@ -2,16 +2,16 @@
 % Please edit documentation in R/use_water_year.R
 \name{use_water_year}
 \alias{use_water_year}
-\title{Title}
+\title{use_water_year}
 \usage{
 use_water_year(x)
 }
 \arguments{
-\item{x}{}
+\item{x}{text...}
 }
 \value{
 
 }
 \description{
-Title
+use_water_year
 }

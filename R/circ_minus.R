@@ -1,10 +1,9 @@
 #' Calculate the circular subtraction \var{x - y}
 #'
 #' @param x A numeric vector or array.
+#' @param int text...
+#' @param type text...
 #' @param y A numeric vector or array.
-#' @param circular
-#'
-
 circ_minus <- function(x, y, int, type = c("minusPiPlusPi", "ZeroPlus2Pi")) {
   stopifnot(all(dim(x) == dim(y)))
 
