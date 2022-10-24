@@ -28,7 +28,8 @@ Imports:
     psych,
     data.table,
     janitor,
-    forcats
+    forcats,
+    paletteer
 Depends: 
     R (>= 4.0)
 LazyData: true

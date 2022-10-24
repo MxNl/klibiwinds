@@ -26,12 +26,12 @@ indicators <-
         id < 3 ~ "niedrig und hoechststand",
         id < 4 ~ "saisonalitaet"
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       indicator = str_glue("indicator_{id}"),
       indicator = str_remove(indicator, "\\."),
       .after = id
-    ) %>%
-    mutate(core_indicator = if_else(id == "1.3" | id == "1.8" | id == "3.2", TRUE, FALSE))
+    ) |>
+    dplyr::mutate(core_indicator = if_else(id == "1.3" | id == "1.8" | id == "2.4", TRUE, FALSE))
 
 usethis::use_data(indicators, overwrite = TRUE)

@@ -29,12 +29,12 @@ add_indicator_2_3 <- function(x, y, selected_reference_period = "Z1") {
     ) |>
     dplyr::filter(gwl < indicator_15_z1) |>
     dplyr::summarise(
-      mo_gw_low = n(),
+      mo_gw_low = dplyr::n(),
       .groups = "drop_last"
     ) |>
     dplyr::filter(mo_gw_low >= 1) |>
     dplyr::summarise(
-      indicator_23 = n(),
+      indicator_23 = dplyr::n(),
       .groups = "drop"
     )
 

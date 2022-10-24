@@ -10,7 +10,7 @@ date_fake <-
     months_fake,
     day_fake
   ) |>
-    mutate(
+    dplyr::mutate(
       date = stringr::str_c(years_fake, months_fake, day_fake, sep = "-"),
     date = lubridate::as_date(date)) |>
     pull(date)
@@ -23,8 +23,8 @@ gwl_fake_data <-
   ) |>
     rename_all(stringr::str_remove_all, pattern = "_fake") |>
     group_by(well_id, climate_model_name) |>
-    mutate(
-      gwl = rep_len(gwl_fake, length.out = n()),
+    dplyr::mutate(
+      gwl = rep_len(gwl_fake, length.out = dplyr::n()),
       gwl = gwl + cur_group_id() - 1
     ) |>
     ungroup()

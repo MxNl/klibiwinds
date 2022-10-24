@@ -12,3 +12,5 @@
 ^LICENSE\.md$
 ^Ausgangsdaten_Tabellen_TS$
 ^data_export
+^plot_drafts.qmd
+^plot_drafts.html

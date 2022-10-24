@@ -1,4 +1,8 @@
-filepath_projections <- "D:/Data/students/mariana/Results/Projections"
+sysfonts::font_add_google("Abel", "base_font")
+showtext::showtext_opts(dpi = 300)
+showtext::showtext_auto()
+
+filepath_projections <- "D:/Data/students/mariana/Results/Projections_hist"
 filepath_historic <- "J:/PROJEKTE/KliBiW7/Daten/Grundwasserstandsdaten/Einzelmessstellen"
 
 data_gwl <- collect_data(
@@ -6,185 +10,88 @@ data_gwl <- collect_data(
   filepath_projections
 )
 
+data_gwl <- data_gwl |>
+  add_model_performance("D:/Data/students/mariana/Results/Optimization/PT")
+
 data_gwl |> arrow::write_parquet("data_export/data_gwl.parquet")
 data_gwl <- arrow::read_parquet("data_export/data_gwl.parquet")
 
-### Filter for test speed
-# data_gwl <- data_gwl %>%
-#   group_by(well_id) %>%
-#   group_split() %>%
-#   magrittr::extract(1:10) %>%
-#   reduce(bind_rows)
-
 data_gwl_ref <- data_gwl |>
-  use_water_year() %>%
-  add_reference_period_column() %>%
-  drop_incomplete_z1_period()
-
-## Fake data for climatemodels for Z1
-data_gwl_Z1_fake <- data_gwl_ref |>
-  filter(reference_period == "Z2") |>
-  mutate(
-    gwl = gwl +
-      0.001 * gwl +
-      rnorm(n(), mean = 0, sd = 0.1),
-    reference_period = "Z1",
-    date = add_with_rollback(date, years(-40))
-  )
-
-data_gwl_ref <- data_gwl_ref %>%
-  bind_rows(data_gwl_Z1_fake) %>%
-  arrange(well_id, climate_model_name, reference_period, date)
-
-### Number of time series starting before 1983
-data_gwl_ref |>
-  filter(climate_model_name == "observed") %>%
-  group_by(well_id) |>
-    summarise(min = min(date)) |>
-    filter(lubridate::year(min) <= 1983)
-
-# data_gwl_ref |>
-#   filter(reference_period == "Z1") |>
-#   group_by(well_id) |>
-#   count() |>
-#   arrange(n) |>
-#   ggplot() +
-#   aes(n) +
-#   geom_histogram() +
-#   scale_x_reverse()
+  filter_criterion_model_performance() |>
+  use_water_year() |>
+  add_reference_period_column() |>
+  filter_criterion_incomplete_z1_period()
 
 indicators_summary <- data_gwl_ref |>
   make_summary_table() |>
   add_indicators_all(data_gwl_ref)
 
 indicators_summary <- indicators_summary |>
-  # select(well_id, climate_model_name, reference_period, indicator_33) |>
   unnest_indicator_3_3()
 
-indicators_summary_observed <- indicators_summary %>%
+indicators_summary_observed <- indicators_summary |>
   split_observed()
-indicators_summary_projections <- indicators_summary %>%
+indicators_summary_projections <- indicators_summary |>
   split_projections()
 
 projections_change_table <-
-  indicators_summary_projections %>%
+  indicators_summary_projections |>
     make_projections_change_table()
 
 observed_change_table <-
-  indicators_summary_observed %>%
+  indicators_summary_observed |>
     make_observed_change_table(projections_change_table)
 
-regions_well <- sf::read_sf(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp")) %>%
-  janitor::clean_names() %>%
-  rename(well_id = mest_id) %>%
-  mutate(well_id = as.character(well_id))
-
-regions_climate <- sf::read_sf(here::here("data_export", "Klimaregionen_Nds.shp"))
-regions_natur <- sf::read_sf(here::here("data_export", "Naturraum_Reg_DTK50.shp"))
-
-dem_lowersaxony <- regions_climate %>%
-  summarise() %>%
-  sf::st_cast("POLYGON") %>%
-  arrange(-sf::st_area(geometry)) %>%
-  slice(1) %>%
-  elevatr::get_elev_raster(
-    src = "gl3",
-    z = 8,
-    clip = "locations"
-  )
-
-dem_lowersaxony_stars <- dem_lowersaxony %>%
-  stars::st_as_stars()
-
-ggplot() +
-  geom_stars(data = dem_lowersaxony_stars, downsample = 10, interpolate = TRUE) +
-  coord_sf() +
-  scale_fill_gradientn(colours = terrain.colors(10)) +
-  theme_void()
-
-regions_well %>%
-  distinct(region)
-
-regions_well %>%
-  ggplot() +
-  geom_sf()
+# regions_climate <- sf::read_sf(here::here("data_export", "Klimaregionen_Nds.shp"))
+# regions_natur <- sf::read_sf(here::here("data_export", "Naturraum_Reg_DTK50.shp"))
+#
+# dem_lowersaxony <- regions_climate |>
+#   summarise() |>
+#   sf::st_cast("POLYGON") |>
+#   arrange(-sf::st_area(geometry)) |>
+#   slice(1) |>
+#   elevatr::get_elev_raster(
+#     src = "gl3",
+#     z = 8,
+#     clip = "locations"
+#   )
+#
+# dem_lowersaxony_stars <- dem_lowersaxony |>
+#   stars::st_as_stars()
+#
+# ggplot() +
+#   stars::geom_stars(data = dem_lowersaxony_stars, downsample = 10, interpolate = TRUE) +
+#   coord_sf() +
+#   scale_fill_gradientn(colours = terrain.colors(10)) +
+#   theme_void()
 
 ###### Start Plotting
-plot_data <- observed_change_table %>%
-  add_indicator_names() %>%
-  use_core_indicators_only() %>%
-  left_join(regions_well %>% select(well_id, region), by = "well_id")
+showtext::showtext_opts(dpi = 300)
 
-plot_data %>%
-  pivot_longer(cols = contains("absolute_change"), names_to = "period") %>%
-  ggplot(
-    aes(value, climate_model_name, height = ..density..)
-  ) +
-  # ggridges::stat_density_ridges(
-  #   aes(fill = 0.5 - abs(0.5 - stat(ecdf))),
-  #   geom = "density_ridges_gradient",
-  #   calc_ecdf = TRUE,
-  #   alpha = .75,
-  #   colour = "white"
-  # ) +
-  ggridges::geom_density_ridges(
-    aes(vline_color = ..quantile..),
-    quantile_lines = TRUE,
-    quantiles = 2,
-    fill = "grey",
-    alpha = .75,
-    colour = "white",
-    show.legend = FALSE,
-    trim = TRUE
-  ) +
-  geom_vline(xintercept = 0, colour = "red", linetype = "dashed") +
-  scale_fill_viridis_c(option = "inferno", direction = -1) +
-  scale_discrete_manual("vline_color", values = c("white", "grey")) +
-  facet_grid(period ~ name, scales = "free") +
-  ggridges::theme_ridges()
+plot_data <- observed_change_table |>
+  add_indicator_names() |>
+  use_core_indicators_only() |>
+  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp"))
 
-plot_data %>%
-  rename(absolute_value_z1 = observed) %>%
-  pivot_longer(cols = contains("value"), names_to = "period") %>%
-  mutate(period = period %>% str_remove("absolute_value_z")) %>%
-  group_by(indicator, period, climate_model_name) %>%
-  filter(value >= median(value) - 2 * sd(value) &
-           value <= median(value) + 2 * sd(value)) %>%
-  ungroup() %>%
-  z_to_yearrange_period_names() %>%
-  ggplot(
-    aes(value, period, height = ..density..)
-  ) +
-  ggridges::geom_density_ridges(
-    aes(vline_color = ..quantile.., fill = as.numeric(period)),
-    quantile_lines = TRUE,
-    quantiles = 2,
-    alpha = .75,
-    colour = "white",
-    scale = 2.5,
-    show.legend = FALSE,
-    trim = TRUE
-  ) +
-  # scale_fill_viridis_c(option = "inferno", direction = -1) +
-  scale_discrete_manual("vline_color", values = c("white", "grey")) +
-  facet_grid(climate_model_name ~ name, scales = "free") +
-  ggridges::theme_ridges()
+p1 <- plot_data |>
+  make_plot_distribution_vs(region_natur, indicator_name)
+p2 <- plot_data |>
+  make_plot_distribution_vs(region_climate, indicator_name)
+p3 <- plot_data |>
+  make_plot_distribution_vs(screen_top, indicator_name)
+p4 <- plot_data |>
+  make_plot_distribution_vs(depth_to_gwl, indicator_name)
+p5 <- plot_data |>
+  make_plot_distribution_vs(climate_model_name, indicator_name)
 
-
-observed_change_table %>%
-  rename(absolute_value_z1 = observed) %>%
-  add_indicator_names() %>%
-  use_core_indicators_only() %>%
-  pivot_longer(cols = contains("value"), names_to = "period") %>%
-  mutate(period = period %>%
-    str_remove("absolute_value_z") %>%
-    as.numeric()) %>%
-  # filter(well_id == "100000732") %>%
-  ggplot(aes(period, value, group = interaction(well_id, climate_model_name))) +
-  geom_line() +
-  # scale_y_log10() +
-  facet_wrap(~name, ncol = 1, scales = "free_y")
-
+list(p1, p2, p3, p4, p5) |>
+  purrr::map2(
+    c("data_export/plot_distribution_vs") |> paste(1:5, sep = "_") |> paste0(".png"),
+    ~ .x |> ggplot2::ggsave(
+      filename = .y, device = "png",
+      scale = 1.7, units = "cm", width = 10, height = 8, dpi = 300
+    )
+  )
 
 # indicators_summary |> # distinct(climate_model_name)
 #   group_by(well_id) |>
@@ -208,29 +115,29 @@ observed_change_table %>%
 #   geom_point()
 
 # Check why Mittlerer Grundwasserstand distribution looks same for all periods and models
-plot_data %>%
-  rename(absolute_value_z1 = observed) %>%
-  pivot_longer(cols = contains("value"), names_to = "period") %>%
-  mutate(period = period %>% str_remove("absolute_value_z")) %>%
-  group_by(indicator, period, climate_model_name) %>%
+plot_data |>
+  rename(absolute_value_z1 = observed) |>
+  tidyr::pivot_longer(cols = contains("value"), names_to = "period") |>
+  mutate(period = period |> str_remove("absolute_value_z")) |>
+  group_by(indicator, period, climate_model_name) |>
   filter(value >= median(value) - 2 * sd(value) &
-           value <= median(value) + 2 * sd(value)) %>%
-  ungroup() %>%
-  z_to_yearrange_period_names() %>%
-  select(well_id, climate_model_name, name, value, period) %>%
-  pivot_wider(names_from = period) %>%
+           value <= median(value) + 2 * sd(value)) |>
+  ungroup() |>
+  z_to_yearrange_period_names() |>
+  select(well_id, climate_model_name, name, value, period) |>
+  pivot_wider(names_from = period) |>
   filter(name == "Mittlerer Grundwasserstand")
 
-plot_data %>%
-  rename(absolute_value_z1 = observed) %>%
-  pivot_longer(cols = contains("value"), names_to = "period") %>%
-  mutate(period = period %>% str_remove("absolute_value_z")) %>%
-  z_to_yearrange_period_names() %>%
+plot_data |>
+  rename(absolute_value_z1 = observed) |>
+  tidyr::pivot_longer(cols = contains("value"), names_to = "period") |>
+  mutate(period = period |> str_remove("absolute_value_z")) |>
+  z_to_yearrange_period_names() |>
   ggplot(
     aes(value, period, height = ..density..)
   ) +
   ggridges::geom_density_ridges(
-    aes(vline_color = ..quantile.., fill = as.numeric(period)),
+    aes(vline_color = ..quantile. |>fill = as.numeric(period)),
     quantile_lines = TRUE,
     quantiles = 2,
     alpha = .75,
@@ -244,16 +151,16 @@ plot_data %>%
   facet_grid(region ~ name, scales = "free") +
   ggridges::theme_ridges()
 
-plot_data %>%
-  rename(absolute_value_z1 = observed) %>%
-  pivot_longer(cols = contains("change"), names_to = "period") %>%
-  mutate(period = period %>% str_remove("absolute_change_z")) %>%
-  z_to_yearrange_period_names() %>%
+plot_data |>
+  rename(absolute_value_z1 = observed) |>
+  tidyr::pivot_longer(cols = contains("change"), names_to = "period") |>
+  mutate(period = period |> str_remove("absolute_change_z")) |>
+  z_to_yearrange_period_names() |>
   ggplot(
     aes(value, period, height = ..density..)
   ) +
   ggridges::geom_density_ridges(
-    aes(vline_color = ..quantile.., fill = as.numeric(period)),
+    aes(vline_color = ..quantile. |>fill = as.numeric(period)),
     quantile_lines = TRUE,
     quantiles = 2,
     alpha = .75,
@@ -266,20 +173,6 @@ plot_data %>%
   scale_discrete_manual("vline_color", values = c("white", "grey")) +
   facet_grid(region ~ name, scales = "free") +
   ggridges::theme_ridges()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 projected_wells <- indicators_summary |>
@@ -288,33 +181,6 @@ projected_wells <- indicators_summary |>
 wells_coords <- "D:/Data/students/mariana/data/SHP/gw_sel_int.shp" |>
   sf::read_sf()
 
-read_txt_and_add_path_as_column <- function(filepath) {
-  filepath |>
-    readr::read_lines(skip = 3, n_max = 6, locale = readr::locale(encoding = "ISO-8859-1")) |>
-    magrittr::extract(c(1, 2)) |>
-    tibble::enframe() |>
-    dplyr::mutate(
-      name = stringr::word(value, end = 1, sep = " "),
-      value = stringr::word(value, start = -1, sep = " ") |> as.numeric()
-    ) |>
-    dplyr::mutate(identifier = filepath) |>
-    tidyr::as_tibble()
-}
-
-score_files <- "D:/Data/students/mariana/Results/Optimization/PT" |>
-  list.files(full.names = TRUE, pattern = "log_summary") |>
-  map_dfr(read_txt_and_add_path_as_column)
-
-
-scores <- score_files |>
-  mutate(
-    well_id = stringr::word(identifier, start = -1, sep = "_"),
-    well_id = stringr::str_remove_all(well_id, ".txt"),
-    .before = 1
-  ) |>
-  select(-identifier) |>
-  pivot_wider() |>
-  janitor::clean_names()
 
 ####### Match with LBEG wells
 lbeg_wells <- tribble(
@@ -359,7 +225,7 @@ indicators_summary <- indicators_summary |>
   unnest_indicator_3_3()
 
 plot_data <- indicators_summary |>
-  pivot_longer(cols = contains("indicator")) |>
+  tidyr::pivot_longer(cols = contains("indicator")) |>
   as_tibble() |>
   group_by(well_id, reference_period, name) |>
   summarise(
@@ -374,7 +240,7 @@ plot_data <- wells_coords |>
   rename(well_id = MEST_ID) |>
   select(well_id) |>
   inner_join(plot_data, by = "well_id")
-# pivot_longer(cols = all_of(c("min", "mean", "max")))
+# tidyr::pivot_longer(cols = all_of(c("min", "mean", "max")))
 
 p <- plot_data |>
   filter(name == "indicator_21") |>
@@ -410,3 +276,165 @@ rayshader::plot_gg(plot, width = 5, height = 5, multicore = TRUE, scale = 250,
                    zoom = 0.7, theta = 10, phi = 30, windowsize = c(800, 800))
 Sys.sleep(0.2)
 rayshader::render_snapshot(clear = TRUE)
+
+
+
+
+########## Plot timeseries heatmap vs
+plot_data <- data_gwl |>
+  filter_criterion_model_performance() |>
+  add_reference_period_column() |>
+  filter_criterion_incomplete_z1_period() |>
+  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp"))
+
+p1 <- plot_data |>
+  make_plot_timeseries_heatmap(region_natur)
+p2 <- plot_data |>
+  make_plot_timeseries_heatmap(region_climate)
+p3 <- plot_data |>
+  make_plot_timeseries_heatmap(depth_to_gwl)
+p4 <- plot_data |>
+  make_plot_timeseries_heatmap(screen_top)
+
+list(p1, p2, p3, p4) |>
+  purrr::map2(
+    c("data_export/plot_timeseries_heatmap") |> paste(1:4, sep = "_") |> paste0(".png"),
+    ~ .x |> ggplot2::ggsave(
+      filename = .y, device = "png",
+      scale = 1.8, units = "cm", width = 10, height = 10, dpi = 300
+    )
+  )
+
+
+########## Plot special single timeseries heatmap
+selection_well_ids <- data_gwl |>
+  filter_criterion_model_performance() |>
+  add_reference_period_column() |>
+  filter_criterion_incomplete_z1_period() |>
+  dplyr::left_join(indicators_summary) |>
+  dplyr::group_by(well_id, climate_model_name) |>
+  dplyr::summarise(selection_indicator = range(indicator_32) |> diff() |> abs()) |>
+  dplyr::ungroup() |>
+  dplyr::arrange(-selection_indicator)
+
+plot_data <- data_gwl |>
+  filter_criterion_model_performance() |>
+  dplyr::filter(
+    well_id == selection_well_ids |>
+      dplyr::slice(1) |>
+      dplyr::pull(well_id) &
+      climate_model_name == selection_well_ids |>
+        dplyr::slice(1) |>
+        dplyr::pull(climate_model_name)
+  )
+
+p1 <- plot_data |>
+  dplyr::mutate(
+    month = date |>
+      lubridate::month() |>
+      integer_to_monthabbr() |>
+      factor(levels = month.abb),
+    year = lubridate::year(date)
+  ) |>
+  ggplot2::ggplot() +
+  ggplot2::aes(month, year, fill = gwl) +
+  ggplot2::geom_tile() +
+  ggplot2::scale_x_discrete(labels = label_every_nth) +
+  ggplot2::scale_y_continuous(
+    breaks = 1981:2100,
+    # minor_breaks = NULL,
+    labels = label_every_nth,
+    # limits = scale_y_limits,
+    expand = c(.01, .01)
+  ) +
+  ggplot2::scale_fill_viridis_c(
+    # "scico::vik",
+    direction = -1,
+    # limits = scale_fill_limits,
+    guide = ggplot2::guide_colourbar(
+      barheight = .3,
+      barwidth = 7,
+      title.position = "bottom",
+      title.hjust = .5
+    )
+  ) +
+  ggplot2::labs(
+    title = selection_well_ids |>
+      dplyr::slice(1) |>
+      dplyr::pull(well_id) |>
+      stringr::str_replace("_", " ") |>
+      stringr::str_to_sentence(),
+    subtitle = selection_well_ids |>
+      dplyr::slice(1) |>
+      dplyr::pull(climate_model_name) |>
+      stringr::str_replace("_", " ") |>
+      stringr::str_to_sentence(),
+    y = "Year",
+    fill = "GWL (centered to mean)"
+  ) +
+  ggplot2::theme_minimal() +
+  ggplot2::theme(
+    text = ggplot2::element_text(family = "base_font", size = 10),
+    axis.text = ggplot2::element_text(size = 8),
+    title = ggplot2::element_text(hjust = .5, size = 11),
+    legend.position = "bottom",
+    axis.title.x = ggplot2::element_blank()
+  )
+
+
+
+p1 |>
+  ggplot2::ggsave(
+    filename = "data_export/plot_timeseries_heatmap_single.png", device = "png",
+    scale = 1.8, units = "cm", width = 3, height = 10, dpi = 300
+  )
+
+
+
+
+
+data_gwl |>
+  filter(year(date) >= 1981) |>
+  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp")) |>
+  group_by(well_id, climate_model_name) |>
+  mutate(gwl = gwl - first(gwl)) |>
+  group_by(screen_top, date) |>
+  # mutate(gwl = BBmisc::normalize(gwl)) |>
+  summarise(gwl = mean(gwl)) |>
+  mutate(
+    month = date |>
+      month |>
+      integer_to_monthabbr |>
+      factor(levels = month.abb),
+    year = year(date) |>
+      factor()
+  ) |>
+  group_by(screen_top) |>
+  group_split() |>
+  map(~.x |>
+    ggplot() +
+    aes(month, year, fill = gwl) +
+    geom_tile(colour = NA) +
+    scale_x_discrete(labels = label_every_nth) +
+    scale_y_discrete(labels = label_every_nth) +
+    scale_fill_viridis_c(
+      guide = guide_colourbar(
+        barheight = .4,
+        title.position = "top",
+        title.hjust = .5
+      )
+    ) +
+    labs(
+      title = .x |> slice(1) |> pull(screen_top),
+      y = "Year",
+      fill = "Gwl (normalized)"
+    ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(hjust = .5),
+      legend.position = "top",
+      axis.title.x = element_blank()
+    )
+      # facet_grid(reference_period ~ region_natur, scales = "free")
+  ) |>
+  patchwork::wrap_plots(nrow = 1)

@@ -23,7 +23,7 @@ collect_historic_data <- function(filepath) {
       gwl = as.numeric(gwl),
       well_id = as.character(well_id)
     ) |>
-    # dplyr::mutate(year = lubridate::year(date), .after = date) |>
+    # dplyr::mutate(year = lubridate::year(date) |>after = date) |>
     dplyr::group_by(well_id) |>
     dplyr::arrange(date) |>
     dplyr::ungroup() |>
