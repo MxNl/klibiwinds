@@ -7,7 +7,7 @@
 make_projections_change_table(summary_table)
 }
 \arguments{
-\item{summary_table}{}
+\item{summary_table}{text...}
 }
 \value{
 

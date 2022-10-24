@@ -1,12 +1,12 @@
 #' Title
 #'
-#' @param x
-#' @param y
+#' @param x text...
+#' @param y text...
 #'
 #' @return
 #' @export
 #'
-#' @examples
+
 make_observed_change_table <- function(x, y) {
   x |>
     tidyr::pivot_longer(

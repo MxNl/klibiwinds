@@ -1,11 +1,11 @@
 #' Title
 #'
-#' @param x
+#' @param x text...
 #'
 #' @return
 #' @export
 #'
-#' @examples
+
 add_indicator_names <- function(x) {
   x |>
     dplyr::left_join(indicators, by = "indicator") |>

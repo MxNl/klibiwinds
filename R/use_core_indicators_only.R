@@ -1,11 +1,11 @@
-#' Title
+#' use_core_indicators_only
 #'
-#' @param x
+#' @param x text...
 #'
 #' @return
 #' @export
 #'
-#' @examples
+
 use_core_indicators_only <- function (x) {
   x |>
     dplyr::filter(core_indicator == TRUE) |>

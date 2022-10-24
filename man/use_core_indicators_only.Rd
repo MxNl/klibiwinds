@@ -2,16 +2,16 @@
 % Please edit documentation in R/use_core_indicators_only.R
 \name{use_core_indicators_only}
 \alias{use_core_indicators_only}
-\title{Title}
+\title{use_core_indicators_only}
 \usage{
 use_core_indicators_only(x)
 }
 \arguments{
-\item{x}{}
+\item{x}{text...}
 }
 \value{
 
 }
 \description{
-Title
+use_core_indicators_only
 }

@@ -1,13 +1,13 @@
 #' make_plot_distribution_vs
 #'
-#' @param plot_data
-#' @param var_rows
-#' @param var_columns
+#' @param plot_data text...
+#' @param var_rows text...
+#' @param var_columns text...
 #'
 #' @return
 #' @export
 #'
-#' @examples
+
 make_plot_distribution_vs <- function(plot_data, var_rows, var_columns) {
   var_columns <- dplyr::enquo(var_columns)
   var_rows <- dplyr::enquo(var_rows)

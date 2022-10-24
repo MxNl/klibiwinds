@@ -2,16 +2,16 @@
 % Please edit documentation in R/split_observed.R
 \name{split_observed}
 \alias{split_observed}
-\title{Title}
+\title{split_observed}
 \usage{
 split_observed(x)
 }
 \arguments{
-\item{x}{}
+\item{x}{text...}
 }
 \value{
 
 }
 \description{
-Title
+split_observed
 }

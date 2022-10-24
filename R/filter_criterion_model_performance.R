@@ -2,7 +2,7 @@
 #'
 #' Drop...
 #'
-#' @param x asda
+#' @param x text...
 #'
 #' @export
 filter_criterion_model_performance <- function(x) {

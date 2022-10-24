@@ -7,7 +7,11 @@
 make_plot_distribution_vs(plot_data, var_rows, var_columns)
 }
 \arguments{
-\item{var_columns}{}
+\item{plot_data}{text...}
+
+\item{var_rows}{text...}
+
+\item{var_columns}{text...}
 }
 \value{
 

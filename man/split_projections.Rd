@@ -2,16 +2,16 @@
 % Please edit documentation in R/split_projections.R
 \name{split_projections}
 \alias{split_projections}
-\title{Title}
+\title{split_projections}
 \usage{
 split_projections(x)
 }
 \arguments{
-\item{x}{}
+\item{x}{text...}
 }
 \value{
 
 }
 \description{
-Title
+split_projections
 }

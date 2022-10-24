@@ -7,7 +7,9 @@
 add_geo_context(x, filepath)
 }
 \arguments{
-\item{filepath}{}
+\item{x}{text...}
+
+\item{filepath}{text...}
 }
 \value{
 

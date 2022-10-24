@@ -1,12 +1,12 @@
 #' add_geo_context
 #'
-#' @param x
-#' @param filepath
+#' @param x text...
+#' @param filepath text...
 #'
 #' @return
 #' @export
 #'
-#' @examples
+
 add_geo_context <- function(x, filepath) {
   regions_well <- sf::read_sf(filepath) |>
     janitor::clean_names() |>

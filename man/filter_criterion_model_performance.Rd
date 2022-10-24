@@ -7,7 +7,7 @@
 filter_criterion_model_performance(x)
 }
 \arguments{
-\item{x}{asda}
+\item{x}{text...}
 }
 \description{
 Drop...

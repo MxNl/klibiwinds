@@ -7,7 +7,7 @@
 filter_criterion_incomplete_z1_period(x)
 }
 \arguments{
-\item{x}{asda}
+\item{x}{text...}
 }
 \description{
 Drop...

@@ -4,7 +4,7 @@
 #' @param y A numeric vector or array.
 #' @param circular
 #'
-#' @examples
+
 circ_minus <- function(x, y, int, type = c("minusPiPlusPi", "ZeroPlus2Pi")) {
   stopifnot(all(dim(x) == dim(y)))
 

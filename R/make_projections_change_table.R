@@ -1,11 +1,11 @@
 #' Title
 #'
-#' @param summary_table
+#' @param summary_table text...
 #'
 #' @return
 #' @export
 #'
-#' @examples
+
 make_projections_change_table <- function(summary_table) {
   summary_table |>
     tidyr::pivot_longer(

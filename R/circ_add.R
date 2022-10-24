@@ -1,9 +1,9 @@
 #' Calculate the circular addition \var{x + y}
 #'
-#' @param circ_minus
-#' @param circular
+#' @param circ_minus text...
+#' @param circular text...
 #'
-#' @examples
+
 circ_add <- function(x, y, int, type = c("minusPiPlusPi", "ZeroPlus2Pi")) {
   stopifnot(all(dim(x) == dim(y)))
 

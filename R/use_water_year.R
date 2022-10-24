@@ -5,7 +5,7 @@
 #' @return
 #' @export
 #'
-#' @examples
+
 #' @export
 use_water_year <- function(x) {
   x |>

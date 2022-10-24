@@ -7,7 +7,9 @@
 make_observed_change_table(x, y)
 }
 \arguments{
-\item{y}{}
+\item{x}{text...}
+
+\item{y}{text...}
 }
 \value{
 

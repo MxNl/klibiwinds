@@ -7,7 +7,9 @@
 circ_add(x, y, int, type = c("minusPiPlusPi", "ZeroPlus2Pi"))
 }
 \arguments{
-\item{circular}{}
+\item{circ_minus}{text...}
+
+\item{circular}{text...}
 }
 \description{
 Calculate the circular addition \var{x + y}

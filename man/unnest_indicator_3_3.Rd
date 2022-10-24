@@ -10,5 +10,8 @@ unnest_indicator_3_3(x)
 \item{x}{A summary table (tibble) with the nested indicator 3.3}
 }
 \description{
+unnest_indicator_3_3
+}
+\details{
 Unnest the tibble column of indicator 3.3
 }

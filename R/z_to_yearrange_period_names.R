@@ -1,11 +1,11 @@
-#' Title
+#' z_to_yearrange_period_names
 #'
-#' @param x_long_format
+#' @param x_long_format text...
 #'
 #' @return
 #' @export
 #'
-#' @examples
+
 z_to_yearrange_period_names <- function(x_long_format) {
   new_perido_names <- reference_periods |>
     dplyr::group_by(reference_period) |>

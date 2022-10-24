@@ -7,7 +7,7 @@
 add_indicator_names(x)
 }
 \arguments{
-\item{x}{}
+\item{x}{text...}
 }
 \value{
 
