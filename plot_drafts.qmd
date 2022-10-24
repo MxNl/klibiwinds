@@ -1,0 +1,220 @@
+---
+title: "Klibiwinds7 Results"
+subtitle: "Plot drafts"
+execute:
+  warning: false
+  out.width> "100%"
+format: 
+  html:
+    theme: materia
+    toc: true
+    toc-title: "Contents"
+    code-fold: true
+editor: visual
+---
+
+```{r}
+library(klibiwinds)
+library(dplyr)
+library(sf)
+library(ggplot2)
+library(stringr)
+library(tidyr)
+```
+
+# Import
+
+```{r}
+data_gwl <- here::here("data_export", "data_gwl.parquet") |> 
+  arrow::read_parquet()
+```
+
+# Preparation
+
+## Cleaning
+
+```{r}
+data_gwl_ref <- data_gwl |>
+  use_water_year() |>
+  add_reference_period_column() |>
+  filter_criterion_incomplete_z1_period()
+```
+
+## Synthetic Z1 projections
+
+```{r}
+## Fake data for climatemodels for Z1
+data_gwl_Z1_fake <- data_gwl_ref |>
+  filter(reference_period == "Z2") |>
+  mutate(
+    gwl = gwl +
+      0.001 * gwl +
+      rnorm(n(), mean = 0, sd = 0.1),
+    reference_period = "Z1",
+    date = lubridate::add_with_rollback(date, lubridate::years(-40))
+  )
+
+data_gwl_ref <- data_gwl_ref %>%
+  bind_rows(data_gwl_Z1_fake) %>%
+  arrange(well_id, climate_model_name, reference_period, date)
+
+```
+
+# Indicators calculation
+
+```{r}
+indicators_summary <- data_gwl_ref |>
+  make_summary_table() |>
+  add_indicators_all(data_gwl_ref)
+
+indicators_summary <- indicators_summary |>
+  unnest_indicator_3_3()
+
+indicators_summary_observed <- indicators_summary %>%
+  split_observed()
+indicators_summary_projections <- indicators_summary %>%
+  split_projections()
+```
+
+```{r}
+projections_change_table <-
+  indicators_summary_projections %>%
+    make_projections_change_table()
+
+observed_change_table <-
+  indicators_summary_observed %>%
+    make_observed_change_table(projections_change_table)
+```
+
+# Spatial context
+
+```{r}
+regions_well <- sf::read_sf(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp")) %>%
+  janitor::clean_names() %>%
+  rename(well_id = mest_id) %>%
+  mutate(well_id = as.character(well_id))
+
+regions_climate <- sf::read_sf(here::here("data_export", "Klimaregionen_Nds.shp"))
+regions_natur <- sf::read_sf(here::here("data_export", "Naturraum_Reg_DTK50.shp"))
+```
+
+# Results
+
+## Colours
+
+```{r}
+colours_greens <- c("#9cdf7c", "#69cb87", "#39b48e")
+```
+
+## Plot data
+
+```{r}
+plot_data <- observed_change_table %>%
+  add_indicator_names() %>%
+  use_core_indicators_only() %>%
+  left_join(regions_well %>% select(well_id, region), by = "well_id")
+```
+
+## Plots
+
+```{r}
+plot_data %>%
+  tidyr::pivot_longer(cols = contains("absolute_change"), names_to = "period") %>%
+  ggplot(
+    aes(value, climate_model_name, height = ..density..)
+  ) +
+  ggridges::geom_density_ridges(
+    aes(vline_color = ..quantile..),
+    quantile_lines = TRUE,
+    quantiles = 2,
+    fill = colours_greens[2],
+    alpha = .75,
+    colour = "white",
+    show.legend = FALSE,
+    trim = TRUE
+  ) +
+  geom_vline(xintercept = 0, colour = "red", linetype = "dashed") +
+  scale_discrete_manual("vline_color", values = c("white", "grey")) +
+  facet_grid(period ~ name, scales = "free") +
+  ggridges::theme_ridges()
+
+```
+
+```{r}
+plot_data %>%
+  rename(absolute_value_z1 = observed) %>%
+  tidyr::pivot_longer(cols = contains("value"), names_to = "period") %>%
+  mutate(period = period %>% str_remove("absolute_value_z")) %>%
+  group_by(indicator, period, climate_model_name) %>%
+  filter(value >= median(value) - 2 * sd(value) &
+           value <= median(value) + 2 * sd(value)) %>%
+  ungroup() %>%
+  z_to_yearrange_period_names() %>%
+  ggplot(
+    aes(value, period, height = ..density..)
+  ) +
+  ggridges::geom_density_ridges(
+    aes(vline_color = ..quantile.., fill = as.numeric(period)),
+    quantile_lines = TRUE,
+    quantiles = 2,
+    alpha = .75,
+    colour = "white",
+    scale = 2.5,
+    show.legend = FALSE,
+    trim = TRUE
+  ) +
+  # scale_fill_viridis_c(option = "inferno", direction = -1) +
+  scale_discrete_manual("vline_color", values = c("white", "grey")) +
+  facet_grid(climate_model_name ~ name, scales = "free") +
+  ggridges::theme_ridges()
+```
+
+```{r}
+plot_data %>%
+  rename(absolute_value_z1 = observed) %>%
+  tidyr::pivot_longer(cols = contains("value"), names_to = "period") %>%
+  mutate(period = period %>% str_remove("absolute_value_z")) %>%
+  z_to_yearrange_period_names() %>%
+  ggplot(
+    aes(value, period, height = ..density..)
+  ) +
+  ggridges::geom_density_ridges(
+    aes(vline_color = ..quantile.., fill = as.numeric(period)),
+    quantile_lines = TRUE,
+    quantiles = 2,
+    alpha = .75,
+    colour = "white",
+    scale = 2.5,
+    show.legend = FALSE,
+    trim = TRUE
+  ) +
+  # scale_fill_viridis_c(option = "inferno", direction = -1) +
+  scale_discrete_manual("vline_color", values = c("white", "grey")) +
+  facet_grid(region ~ name, scales = "free") +
+  ggridges::theme_ridges()
+```
+
+```{r}
+plot_data %>%
+  rename(absolute_value_z1 = observed) %>%
+  tidyr::pivot_longer(cols = contains("change"), names_to = "period") %>%
+  mutate(period = period %>% str_remove("absolute_change_z")) %>%
+  z_to_yearrange_period_names() %>%
+  ggplot(
+    aes(value, period, height = ..density..)
+  ) +
+  ggridges::geom_density_ridges(
+    aes(vline_color = ..quantile.., fill = as.numeric(period)),
+    quantile_lines = TRUE,
+    quantiles = 2,
+    alpha = .75,
+    colour = "white",
+    scale = 2.5,
+    show.legend = FALSE,
+    trim = TRUE
+  ) +
+  # scale_fill_viridis_c(option = "inferno", direction = -1) +
+  scale_discrete_manual("vline_color", values = c("white", "grey")) +
+  facet_grid(region ~ name, scales = "free") +
+  ggridges::theme_ridges()
+```
