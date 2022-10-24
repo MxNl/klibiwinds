@@ -1,7 +1,3 @@
-sysfonts::font_add_google("Abel", "base_font")
-showtext::showtext_opts(dpi = 300)
-showtext::showtext_auto()
-
 filepath_projections <- "D:/Data/students/mariana/Results/Projections_hist"
 filepath_historic <- "J:/PROJEKTE/KliBiW7/Daten/Grundwasserstandsdaten/Einzelmessstellen"
 
@@ -66,8 +62,11 @@ observed_change_table <-
 #   theme_void()
 
 ###### Start Plotting
+sysfonts::font_add_google("Abel", "base_font")
 showtext::showtext_opts(dpi = 300)
+showtext::showtext_auto()
 
+###### Plot distributions vs
 plot_data <- observed_change_table |>
   add_indicator_names() |>
   use_core_indicators_only() |>
@@ -118,6 +117,90 @@ list(p1, p2, p3, p4) |>
       scale = 1.8, units = "cm", width = 10, height = 10, dpi = 300
     )
   )
+
+
+######### Plot Maps
+showtext::showtext_opts(dpi = 96)
+
+plot_data <- projections_change_table  |>
+  add_indicator_names() |>
+  use_core_indicators_only() |>
+  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp"), as_sf = TRUE) |>
+
+  # dplyr::rename(absolute_value_z1 = observed) |>
+  tidyr::pivot_longer(cols = dplyr::contains("change"), names_to = "period") |>
+  dplyr::mutate(period = period |> stringr::str_remove("relative_change_z")) |>
+  z_to_yearrange_period_names()
+
+plot_data <- observed_change_table  |>
+  add_indicator_names() |>
+  use_core_indicators_only() |>
+  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp"), as_sf = TRUE) |>
+  dplyr::rename(absolute_value_z1 = observed) |>
+  tidyr::pivot_longer(cols = dplyr::contains("value"), names_to = "period") |>
+  dplyr::mutate(period = period |> stringr::str_remove("absolute_value_z")) |>
+  z_to_yearrange_period_names()
+
+regions_climate <- sf::read_sf(here::here("data_export", "Klimaregionen_Nds.shp"))
+regions_natur <- sf::read_sf(here::here("data_export", "Naturraum_Reg_DTK50.shp"))
+
+vbreaks <- c(-1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5)
+
+plot_data |>
+  dplyr::group_by(indicator) |>
+  dplyr::group_split() |>
+  purrr::chuck(1) |>
+  ggplot(aes(colour = value)) +
+  geom_sf(
+    data = regions_natur,
+    fill = "grey80",
+    colour = "black"
+  ) +
+  geom_sf() +
+  coord_sf() +
+  facet_grid(period ~ climate_model_name) +
+  paletteer::scale_colour_paletteer_binned(
+    "scico::vik",
+    # guide='coloursteps',
+    # breaks=vbreaks,
+    guide = ggplot2::guide_colourbar(
+      barheight = .3,
+      barwidth = 20,
+      title.position = "top",
+      title.hjust = .5
+    )
+  # scale_colour_steps2(
+  #   low = "red", mid = "white", high = "darkblue",
+  #   midpoint = 0,
+  #   # guide='coloursteps',
+  #   breaks=vbreaks,
+  #   guide = ggplot2::guide_colourbar(
+  #     barheight = .3,
+  #     barwidth = 20,
+  #     title.position = "top",
+  #     title.hjust = .5
+  #   )
+  ) +
+  theme_void() +
+  theme(
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 14),
+    legend.key.size = unit(2, "line"),
+    panel.border = element_blank(),
+    axis.text = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(size = 14),
+    title = element_text(size = 16),
+    legend.position = "top"
+  )
+
+data_gwl_ref |> dplyr::distinct(well_id)
+plot_data |> dplyr::distinct(well_id)
+
+regions_natur |>
+  ggplot() +
+  geom_sf() +
+  geom_sf(data = plot_data |> dplyr::group_by(well_id) |> dplyr::slice(1))
 
 # indicators_summary |> # distinct(climate_model_name)
 #   group_by(well_id) |>
@@ -437,3 +520,25 @@ data_gwl |>
       # facet_grid(reference_period ~ region_natur, scales = "free")
   ) |>
   patchwork::wrap_plots(nrow = 1)
+
+
+plot_data <- data_gwl |>
+  add_reference_period_column() |>
+  filter_criterion_incomplete_z1_period()
+
+plot_data |>
+  dplyr::arrange(-nse, well_id, climate_model_name, reference_period) |>
+  dplyr::group_by(well_id, climate_model_name, reference_period) |>
+  dplyr::group_split() |>
+  purrr::chuck(1) |>
+  ggplot(aes(date, gwl)) +
+  geom_line()
+
+
+
+
+
+
+
+
+

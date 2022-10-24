@@ -48,8 +48,8 @@ make_plot_distribution_vs <- function(plot_data, var_rows, var_columns) {
     paletteer::scale_colour_paletteer_d("beyonce::X54") +
     paletteer::scale_fill_paletteer_d("beyonce::X54") +
     ggplot2::facet_grid(
-      rows = vars(!!var_rows),
-      cols = vars(!!var_columns),
+      rows = ggplot2::vars(!!var_rows),
+      cols = ggplot2::vars(!!var_columns),
       scales = "free",
       labeller = ggplot2::label_wrap_gen(15)
       ) +
@@ -63,8 +63,8 @@ make_plot_distribution_vs <- function(plot_data, var_rows, var_columns) {
       axis.text = ggplot2::element_text(size = 8),
       title = ggplot2::element_text(hjust = .5, size = 11),
       axis.title.x = ggplot2::element_blank(),
-      strip.background =  element_rect(fill = "grey90"),
-      strip.text = element_text(margin = margin(rep_len(3, 4))),
-      strip.text.y = element_text(angle = 0)
+      strip.background =  ggplot2::element_rect(fill = "grey90"),
+      strip.text = ggplot2::element_text(margin = ggplot2::margin(rep_len(3, 4))),
+      strip.text.y = ggplot2::element_text(angle = 0)
         )
 }

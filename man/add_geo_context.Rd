@@ -4,12 +4,14 @@
 \alias{add_geo_context}
 \title{add_geo_context}
 \usage{
-add_geo_context(x, filepath)
+add_geo_context(x, filepath, as_sf = FALSE)
 }
 \arguments{
 \item{x}{text...}
 
 \item{filepath}{text...}
+
+\item{as_sf}{text...}
 }
 \value{
 

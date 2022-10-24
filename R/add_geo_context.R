@@ -2,12 +2,13 @@
 #'
 #' @param x text...
 #' @param filepath text...
+#' @param as_sf text...
 #'
 #' @return
 #' @export
 #'
 
-add_geo_context <- function(x, filepath) {
+add_geo_context <- function(x, filepath, as_sf = FALSE) {
   regions_well <- sf::read_sf(filepath) |>
     janitor::clean_names() |>
     dplyr::rename(well_id = mest_id) |>
@@ -34,10 +35,17 @@ add_geo_context <- function(x, filepath) {
         stringr::str_remove_all("\\(|\\]") |>
         stringr::str_replace(",", " - ") |>
         stringr::str_c("m")
-    ) |>
-    sf::st_drop_geometry()
+    )
 
-  x |>
+  output <- x |>
     dplyr::left_join(regions_well, by = "well_id") |>
-    tidyr::drop_na(screen_top)
+    dplyr::filter(!is.na(screen_top)) |>
+    sf::st_as_sf()
+
+  if(!as_sf) {
+    output <- output |>
+      sf::st_drop_geometry()
+  }
+
+  return(output)
 }
