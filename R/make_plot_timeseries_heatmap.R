@@ -1,5 +1,5 @@
 make_plot_timeseries_heatmap <- function(x, facet_var) {
-  facet_var <- rlang::enquo(facet_var)
+  facet_var <- dplyr::enquo(facet_var)
 
   plot_data <- x |>
     dplyr::group_by(well_id, reference_period, climate_model_name) |>

@@ -16,6 +16,11 @@ Suggests:
     usethis
 Imports: 
     lubridate,
+    ggridges,
+    BBmisc,
+    patchwork,
+    readr,
+    rlang
     dplyr,
     purrr,
     magrittr,

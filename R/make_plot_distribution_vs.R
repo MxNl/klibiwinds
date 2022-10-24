@@ -9,8 +9,8 @@
 #'
 #' @examples
 make_plot_distribution_vs <- function(plot_data, var_rows, var_columns) {
-  var_columns <- rlang::enquo(var_columns)
-  var_rows <- rlang::enquo(var_rows)
+  var_columns <- dplyr::enquo(var_columns)
+  var_rows <- dplyr::enquo(var_rows)
 
   var_rows_title <- var_rows |>
     substitute() |>
