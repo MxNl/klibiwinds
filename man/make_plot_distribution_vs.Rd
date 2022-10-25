@@ -4,7 +4,12 @@
 \alias{make_plot_distribution_vs}
 \title{make_plot_distribution_vs}
 \usage{
-make_plot_distribution_vs(plot_data, var_rows, var_columns)
+make_plot_distribution_vs(
+  plot_data,
+  var_rows,
+  var_columns,
+  absolute_value_or_change = "value"
+)
 }
 \arguments{
 \item{plot_data}{text...}
@@ -12,6 +17,8 @@ make_plot_distribution_vs(plot_data, var_rows, var_columns)
 \item{var_rows}{text...}
 
 \item{var_columns}{text...}
+
+\item{absolute_value_or_change}{text...}
 }
 \value{
 
