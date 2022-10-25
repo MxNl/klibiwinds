@@ -19,12 +19,12 @@ make_projections_change_table <- function(summary_table) {
       relative_change_z3 = (Z3 - Z1) / Z1,
       relative_change_z2 = dplyr::if_else(
         indicator %in% c("indicator_31", "indicator_32"),
-        circ_minus(Z2, Z1, int = 12),
+        rSW2utils::circ_minus(Z2, Z1, int = 12, type = "ZeroPlus2Pi"),
         relative_change_z2
       ),
       relative_change_z3 = dplyr::if_else(
         indicator %in% c("indicator_31", "indicator_32"),
-        circ_minus(Z3, Z1, int = 12),
+        rSW2utils::circ_minus(Z3, Z1, int = 12, type = "ZeroPlus2Pi"),
         relative_change_z3
       )
     ) |>

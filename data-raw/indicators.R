@@ -1,5 +1,5 @@
 indicators <-
-  tibble(
+  dplyr::tibble(
     indicator_id = c(
       "1.1	Grundwassertiefststand",
       "1.2	Grundwasserhoechststand",
@@ -18,20 +18,20 @@ indicators <-
       "3.3	Mittlerer Jahresgang"
     )
   ) |>
-    separate(indicator_id, sep = "\\t", into = c("id", "name")) |>
+    tidyr::separate(indicator_id, sep = "\\t", into = c("id", "name")) |>
     # dplyr::mutate(id = as.numeric(id)) |>
     dplyr::mutate(
-      class = case_when(
+      class = dplyr::case_when(
         id < 2 ~ "allgemein",
         id < 3 ~ "niedrig und hoechststand",
         id < 4 ~ "saisonalitaet"
       )
     ) |>
     dplyr::mutate(
-      indicator = str_glue("indicator_{id}"),
-      indicator = str_remove(indicator, "\\."),
+      indicator = stringr::str_glue("indicator_{id}"),
+      indicator = stringr::str_remove(indicator, "\\."),
       .after = id
     ) |>
-    dplyr::mutate(core_indicator = if_else(id == "1.3" | id == "1.8" | id == "2.4", TRUE, FALSE))
+    dplyr::mutate(core_indicator = dplyr::if_else(id %in% c("1.5", "1.8", "2.4", "3.2"), TRUE, FALSE))
 
 usethis::use_data(indicators, overwrite = TRUE)

@@ -42,6 +42,7 @@ make_plot_timeseries_heatmap <- function(x, facet_var) {
       ) +
       paletteer::scale_fill_paletteer_c(
         "scico::vik",
+        rescaler = rescaler_mid(),
         direction = -1,
         limits = scale_fill_limits,
         guide = ggplot2::guide_colourbar(
@@ -56,7 +57,7 @@ make_plot_timeseries_heatmap <- function(x, facet_var) {
           dplyr::slice(1) |>
           dplyr::pull(!!facet_var),
         y = "Year",
-        fill = "GWL (centered to mean)"
+        fill = "GWL in m (centered to mean)"
       ) +
       ggplot2::theme_minimal() +
       ggplot2::theme(
