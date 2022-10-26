@@ -272,30 +272,6 @@ Now we can start plotting.
 ``` r
 plot_data |>
   make_plot_distribution_vs(region_natur, indicator_name)
-#> Picking joint bandwidth of 2.64
-#> Picking joint bandwidth of 0.0353
-#> Picking joint bandwidth of 25.6
-#> Picking joint bandwidth of 0.844
-#> Picking joint bandwidth of 1.62
-#> Picking joint bandwidth of 0.0319
-#> Picking joint bandwidth of 1.18
-#> Picking joint bandwidth of 1.45
-#> Picking joint bandwidth of 1.15
-#> Picking joint bandwidth of 0.0379
-#> Picking joint bandwidth of 13.4
-#> Picking joint bandwidth of 1.3
-#> Picking joint bandwidth of 0.813
-#> Picking joint bandwidth of 0.0456
-#> Picking joint bandwidth of 20.1
-#> Picking joint bandwidth of 1.35
-#> Picking joint bandwidth of 1.39
-#> Picking joint bandwidth of 0.0378
-#> Picking joint bandwidth of 33.1
-#> Picking joint bandwidth of 2
-#> Picking joint bandwidth of 1.64
-#> Picking joint bandwidth of 0.0398
-#> Picking joint bandwidth of 8.92
-#> Picking joint bandwidth of 1.42
 ```
 
 <img src="man/figures/README-unnamed-chunk-17-1.png" width="100%" /> 2.
@@ -304,22 +280,6 @@ Distribution grouped by Klimaräume
 ``` r
 plot_data |>
   make_plot_distribution_vs(region_climate, indicator_name)
-#> Picking joint bandwidth of 2.03
-#> Picking joint bandwidth of 0.0226
-#> Picking joint bandwidth of 44.9
-#> Picking joint bandwidth of 2.18
-#> Picking joint bandwidth of 1.28
-#> Picking joint bandwidth of 0.0498
-#> Picking joint bandwidth of 23.7
-#> Picking joint bandwidth of 1.43
-#> Picking joint bandwidth of 1.62
-#> Picking joint bandwidth of 0.0319
-#> Picking joint bandwidth of 1.18
-#> Picking joint bandwidth of 1.45
-#> Picking joint bandwidth of 1.14
-#> Picking joint bandwidth of 0.0346
-#> Picking joint bandwidth of 12.5
-#> Picking joint bandwidth of 1.25
 ```
 
 <img src="man/figures/README-unnamed-chunk-18-1.png" width="100%" /> 3.
@@ -328,22 +288,6 @@ Distribution grouped by depth of screen top
 ``` r
 plot_data |>
   make_plot_distribution_vs(screen_top, indicator_name)
-#> Picking joint bandwidth of 2.05
-#> Picking joint bandwidth of 0.0469
-#> Picking joint bandwidth of 22
-#> Picking joint bandwidth of 1.24
-#> Picking joint bandwidth of 1.13
-#> Picking joint bandwidth of 0.0371
-#> Picking joint bandwidth of 15.5
-#> Picking joint bandwidth of 1.7
-#> Picking joint bandwidth of 1.16
-#> Picking joint bandwidth of 0.0426
-#> Picking joint bandwidth of 13.3
-#> Picking joint bandwidth of 1.44
-#> Picking joint bandwidth of 1.6
-#> Picking joint bandwidth of 0.0295
-#> Picking joint bandwidth of 19.7
-#> Picking joint bandwidth of 1.09
 ```
 
 <img src="man/figures/README-unnamed-chunk-19-1.png" width="100%" /> 4.
@@ -352,33 +296,6 @@ Distribution grouped by depth to groundwater level
 ``` r
 plot_data |>
   make_plot_distribution_vs(depth_to_gwl, indicator_name)
-#> Picking joint bandwidth of 1.84
-#> Picking joint bandwidth of 0.0371
-#> Picking joint bandwidth of 25.3
-#> Picking joint bandwidth of 1.07
-#> Picking joint bandwidth of 5.66
-#> Picking joint bandwidth of 0.182
-#> Picking joint bandwidth of 0.5
-#> Picking joint bandwidth of 1.14
-#> Picking joint bandwidth of 1.03
-#> Picking joint bandwidth of 0.0345
-#> Picking joint bandwidth of 12.9
-#> Picking joint bandwidth of 1.25
-#> Warning in FUN(X[[i]], ...): kein nicht-fehlendes Argument für max; gebe -Inf
-#> zurück
-
-#> Warning in FUN(X[[i]], ...): kein nicht-fehlendes Argument für max; gebe -Inf
-#> zurück
-
-#> Warning in FUN(X[[i]], ...): kein nicht-fehlendes Argument für max; gebe -Inf
-#> zurück
-
-#> Warning in FUN(X[[i]], ...): kein nicht-fehlendes Argument für max; gebe -Inf
-#> zurück
-#> Warning: Position guide is perpendicular to the intended axis. Did you mean to specify a different guide `position`?
-#> Position guide is perpendicular to the intended axis. Did you mean to specify a different guide `position`?
-#> Position guide is perpendicular to the intended axis. Did you mean to specify a different guide `position`?
-#> Position guide is perpendicular to the intended axis. Did you mean to specify a different guide `position`?
 ```
 
 <img src="man/figures/README-unnamed-chunk-20-1.png" width="100%" /> 5.
@@ -387,14 +304,6 @@ Distribution grouped by climate model
 ``` r
 plot_data |>
   make_plot_distribution_vs(climate_model_name, indicator_name)
-#> Picking joint bandwidth of 1.3
-#> Picking joint bandwidth of 0.034
-#> Picking joint bandwidth of 15.7
-#> Picking joint bandwidth of 1.39
-#> Picking joint bandwidth of 1.25
-#> Picking joint bandwidth of 0.0384
-#> Picking joint bandwidth of 15.7
-#> Picking joint bandwidth of 1.4
 ```
 
 <img src="man/figures/README-unnamed-chunk-21-1.png" width="100%" />
