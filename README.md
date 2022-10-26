@@ -274,32 +274,36 @@ plot_data |>
   make_plot_distribution_vs(region_natur, indicator_name)
 ```
 
-<img src="man/figures/README-unnamed-chunk-17-1.png" width="100%" /> 2.
-Distribution grouped by Klimaräume
+<img src="man/figures/README-unnamed-chunk-17-1.png" width="100%" />
+
+2.  Distribution grouped by Klimaräume
 
 ``` r
 plot_data |>
   make_plot_distribution_vs(region_climate, indicator_name)
 ```
 
-<img src="man/figures/README-unnamed-chunk-18-1.png" width="100%" /> 3.
-Distribution grouped by depth of screen top
+<img src="man/figures/README-unnamed-chunk-18-1.png" width="100%" />
+
+3.  Distribution grouped by depth of screen top
 
 ``` r
 plot_data |>
   make_plot_distribution_vs(screen_top, indicator_name)
 ```
 
-<img src="man/figures/README-unnamed-chunk-19-1.png" width="100%" /> 4.
-Distribution grouped by depth to groundwater level
+<img src="man/figures/README-unnamed-chunk-19-1.png" width="100%" />
+
+4.  Distribution grouped by depth to groundwater level
 
 ``` r
 plot_data |>
   make_plot_distribution_vs(depth_to_gwl, indicator_name)
 ```
 
-<img src="man/figures/README-unnamed-chunk-20-1.png" width="100%" /> 5.
-Distribution grouped by climate model
+<img src="man/figures/README-unnamed-chunk-20-1.png" width="100%" />
+
+5.  Distribution grouped by climate model
 
 ``` r
 plot_data |>
@@ -331,24 +335,27 @@ plot_data |>
   make_plot_timeseries_heatmap(region_natur)
 ```
 
-<img src="man/figures/README-unnamed-chunk-23-1.png" width="100%" /> 2.
-Heatmaps grouped by Klimaräume
+<img src="man/figures/README-unnamed-chunk-23-1.png" width="100%" />
+
+2.  Heatmaps grouped by Klimaräume
 
 ``` r
 plot_data |>
   make_plot_timeseries_heatmap(region_climate)
 ```
 
-<img src="man/figures/README-unnamed-chunk-24-1.png" width="100%" /> 3.
-Heatmaps grouped by depth of screen top
+<img src="man/figures/README-unnamed-chunk-24-1.png" width="100%" />
+
+3.  Heatmaps grouped by depth of screen top
 
 ``` r
 plot_data |>
   make_plot_timeseries_heatmap(screen_top)
 ```
 
-<img src="man/figures/README-unnamed-chunk-25-1.png" width="100%" /> 4.
-Heatmaps grouped by depth to groundwater level
+<img src="man/figures/README-unnamed-chunk-25-1.png" width="100%" />
+
+4.  Heatmaps grouped by depth to groundwater level
 
 ``` r
 plot_data |>

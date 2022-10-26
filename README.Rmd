@@ -154,21 +154,25 @@ Now we can start plotting.
 plot_data |>
   make_plot_distribution_vs(region_natur, indicator_name)
 ```
+
 2. Distribution grouped by Klimaräume
 ```{r}
 plot_data |>
   make_plot_distribution_vs(region_climate, indicator_name)
 ```
+
 3. Distribution grouped by depth of screen top
 ```{r}
 plot_data |>
   make_plot_distribution_vs(screen_top, indicator_name)
 ```
+
 4. Distribution grouped by depth to groundwater level
 ```{r}
 plot_data |>
   make_plot_distribution_vs(depth_to_gwl, indicator_name)
 ```
+
 5. Distribution grouped by climate model
 ```{r}
 plot_data |>
@@ -191,16 +195,19 @@ Now we can start plotting.
 plot_data |>
   make_plot_timeseries_heatmap(region_natur)
 ```
+
 2. Heatmaps grouped by Klimaräume
 ```{r}
 plot_data |>
   make_plot_timeseries_heatmap(region_climate)
 ```
+
 3. Heatmaps grouped by depth of screen top
 ```{r}
 plot_data |>
   make_plot_timeseries_heatmap(screen_top)
 ```
+
 4. Heatmaps grouped by depth to groundwater level
 ```{r}
 plot_data |>
