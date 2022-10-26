@@ -15,8 +15,8 @@ You can install the development version of klibiwinds from
 [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
-# devtools::install_github("MxNl/klibiwinds")
+install.packages("devtools")
+devtools::install_github("MxNl/klibiwinds")
 ```
 
 ## Example

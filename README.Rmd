@@ -24,9 +24,9 @@ The goal of klibiwinds is to provide the required functionality to calculate the
 
 You can install the development version of klibiwinds from [GitHub](https://github.com/) with:
 
-```{r}
-# install.packages("devtools")
-# devtools::install_github("MxNl/klibiwinds")
+```{r, eval=FALSE}
+install.packages("devtools")
+devtools::install_github("MxNl/klibiwinds")
 ```
 
 ## Example
