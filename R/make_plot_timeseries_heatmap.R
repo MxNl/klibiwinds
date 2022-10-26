@@ -1,3 +1,10 @@
+#' make_plot_timeseries_heatmap
+#'
+#' @param x text...
+#' @param facet_var text...
+#'
+#' @return
+#' @export
 make_plot_timeseries_heatmap <- function(x, facet_var) {
   facet_var <- dplyr::enquo(facet_var)
 

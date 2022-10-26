@@ -5,7 +5,7 @@
 \alias{gwl_fake_data}
 \title{gwl_fake_data dataset}
 \format{
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 3168 rows and 4 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 182952 rows and 4 columns.
 }
 \usage{
 gwl_fake_data

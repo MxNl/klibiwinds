@@ -7,8 +7,6 @@
 #'
 #' @return
 #' @export
-#'
-
 make_plot_distribution_vs <- function(plot_data, var_rows, var_columns, absolute_value_or_change = "value") {
   var_columns <- dplyr::enquo(var_columns)
   var_rows <- dplyr::enquo(var_rows)
