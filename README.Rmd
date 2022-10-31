@@ -106,6 +106,12 @@ indicators_summary <- indicators_summary |>
   unnest_indicator_3_3()
 ```
 
+Again, we can see, how the table looks with unnested `indicator_33` column
+```{r}
+indicators_summary
+```
+
+
 ### Calulation of Changes
 
 First, we split the table into projections and observations

@@ -210,6 +210,33 @@ indicators_summary <- indicators_summary |>
   unnest_indicator_3_3()
 ```
 
+Again, we can see, how the table looks with unnested `indicator_33`
+column
+
+``` r
+indicators_summary
+#> # A tibble: 294 x 29
+#>    well_id   climate_m~1 refer~2 indic~3 indic~4 indic~5 indic~6 indic~7 indic~8
+#>    <chr>     <chr>       <chr>     <dbl>   <dbl>   <dbl>   <dbl>   <dbl>   <dbl>
+#>  1 100000926 climate_mo~ Z1       -0.280   0.315 0.00350   0.119  -0.180   0.201
+#>  2 100000926 climate_mo~ Z2       -0.359   0.285 0.00309   0.115  -0.202   0.183
+#>  3 100000926 climate_mo~ Z3       -0.279   0.269 0.00188   0.114  -0.185   0.173
+#>  4 100000926 climate_mo~ Z1        0.713   1.40  1.00      0.121   0.800   1.19 
+#>  5 100000926 climate_mo~ Z2        0.627   1.32  0.998     0.117   0.801   1.18 
+#>  6 100000926 climate_mo~ Z3        0.597   1.30  1.00      0.123   0.790   1.21 
+#>  7 100000926 observed    Z1        1.72    2.38  2.01      0.116   1.81    2.19 
+#>  8 100000930 climate_mo~ Z1        2.69    3.26  3.00      0.116   2.81    3.18 
+#>  9 100000930 climate_mo~ Z2        2.68    3.34  3.01      0.118   2.81    3.20 
+#> 10 100000930 climate_mo~ Z3        2.63    3.31  3.01      0.126   2.79    3.22 
+#> # ... with 284 more rows, 20 more variables: indicator_17 <dbl>,
+#> #   indicator_18 <dbl>, indicator_21 <int>, indicator_22 <int>,
+#> #   indicator_23 <int>, indicator_24 <int>, indicator_31 <dbl>,
+#> #   indicator_32 <dbl>, indicator_33_mean_month1 <dbl>,
+#> #   indicator_33_mean_month2 <dbl>, indicator_33_mean_month3 <dbl>,
+#> #   indicator_33_mean_month4 <dbl>, indicator_33_mean_month5 <dbl>,
+#> #   indicator_33_mean_month6 <dbl>, indicator_33_mean_month7 <dbl>, ...
+```
+
 ### Calulation of Changes
 
 First, we split the table into projections and observations
@@ -273,7 +300,7 @@ See the plot
 p1
 ```
 
-<img src="man/figures/README-unnamed-chunk-18-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-19-1.png" width="100%" />
 
 Save the plot
 
@@ -319,7 +346,7 @@ See one of the plots
 plot_list[[1]]
 ```
 
-<img src="man/figures/README-unnamed-chunk-23-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-24-1.png" width="100%" />
 
 Save the plots
 
@@ -361,7 +388,7 @@ plot_data |>
   make_plot_distribution_vs(region_natur, indicator_name)
 ```
 
-<img src="man/figures/README-unnamed-chunk-26-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-27-1.png" width="100%" />
 
 2.  Distribution grouped by Klimaräume
 
@@ -370,7 +397,7 @@ plot_data |>
   make_plot_distribution_vs(region_climate, indicator_name)
 ```
 
-<img src="man/figures/README-unnamed-chunk-27-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-28-1.png" width="100%" />
 
 3.  Distribution grouped by depth of screen top
 
@@ -379,7 +406,7 @@ plot_data |>
   make_plot_distribution_vs(screen_top, indicator_name)
 ```
 
-<img src="man/figures/README-unnamed-chunk-28-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-29-1.png" width="100%" />
 
 4.  Distribution grouped by depth to groundwater level
 
@@ -388,7 +415,7 @@ plot_data |>
   make_plot_distribution_vs(depth_to_gwl, indicator_name)
 ```
 
-<img src="man/figures/README-unnamed-chunk-29-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-30-1.png" width="100%" />
 
 5.  Distribution grouped by climate model
 
@@ -397,7 +424,7 @@ plot_data |>
   make_plot_distribution_vs(climate_model_name, indicator_name)
 ```
 
-<img src="man/figures/README-unnamed-chunk-30-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-31-1.png" width="100%" />
 
 #### Heatmaps of timeseries
 
@@ -422,7 +449,7 @@ plot_data |>
   make_plot_timeseries_heatmap(region_natur)
 ```
 
-<img src="man/figures/README-unnamed-chunk-32-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-33-1.png" width="100%" />
 
 2.  Heatmaps grouped by Klimaräume
 
@@ -431,7 +458,7 @@ plot_data |>
   make_plot_timeseries_heatmap(region_climate)
 ```
 
-<img src="man/figures/README-unnamed-chunk-33-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-34-1.png" width="100%" />
 
 3.  Heatmaps grouped by depth of screen top
 
@@ -440,7 +467,7 @@ plot_data |>
   make_plot_timeseries_heatmap(screen_top)
 ```
 
-<img src="man/figures/README-unnamed-chunk-34-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-35-1.png" width="100%" />
 
 4.  Heatmaps grouped by depth to groundwater level
 
@@ -449,4 +476,4 @@ plot_data |>
   make_plot_timeseries_heatmap(depth_to_gwl)
 ```
 
-<img src="man/figures/README-unnamed-chunk-35-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-36-1.png" width="100%" />
