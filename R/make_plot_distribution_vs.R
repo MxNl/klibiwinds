@@ -19,14 +19,14 @@ make_plot_distribution_vs <- function(plot_data, var_rows, var_columns, absolute
     substitute() |>
     deparse() |>
     stringr::str_remove("~") |>
-    stringr::str_replace("_", " ") |>
+    stringr::str_replace_all("_", " ") |>
     stringr::str_to_sentence()
 
   var_columns_title <- var_columns |>
     substitute() |>
     deparse() |>
     stringr::str_remove("~") |>
-    stringr::str_replace("_", " ") |>
+    stringr::str_replace_all("_", " ") |>
     stringr::str_to_sentence()
 
   column_selector <- absolute_value_or_change
@@ -43,7 +43,7 @@ make_plot_distribution_vs <- function(plot_data, var_rows, var_columns, absolute
       # " / ",
       # n() / length(unique(period)) / n() / length(unique(period))
     )) |>
-    ungroup()
+    dplyr::ungroup()
 
   plot_data |>
     ggplot2::ggplot(
@@ -83,11 +83,16 @@ make_plot_distribution_vs <- function(plot_data, var_rows, var_columns, absolute
       labeller = ggplot2::label_wrap_gen(15)
     ) +
     ggplot2::labs(
-      title = stringr::str_glue("Distribution of {var_columns_title} by {var_rows_title}"),
-      y = "Period"
+      title = stringr::str_glue("Verteilung der {var_columns_title} gruppiert nach {var_rows_title}"),
+      y = "Betrachtete Periode"
     ) +
     ggridges::theme_ridges() +
     ggplot2::theme(
+      panel.grid.minor = ggplot2::element_line(size = 0.25),
+      panel.grid.major = ggplot2::element_line(size = 0.25),
+      panel.grid.major.x = ggplot2::element_blank(),
+      panel.grid.minor.x = ggplot2::element_blank(),
+      strip.placement = "outside",
       text = ggplot2::element_text(family = "base_font", size = 10),
       axis.text = ggplot2::element_text(size = 8),
       title = ggplot2::element_text(hjust = .5, size = 11),
