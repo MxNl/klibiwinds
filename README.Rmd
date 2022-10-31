@@ -137,8 +137,83 @@ Font settings
 sysfonts::font_add_google("Abel", "base_font")
 showtext::showtext_auto()
 ```
+#### Simple Distribution of Indicators
 
-#### Distributions of Indicators
+Prepare the data for plotting
+```{r}
+plot_data <- observed_change_table |>
+  add_indicator_names() |>
+  use_core_indicators_only() |>
+  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp"))
+```
+
+Create the plot
+```{r}
+p1 <- plot_data |>
+  make_plot_simple_histogram(region_natur)
+```
+
+See the plot
+```{r}
+p1
+```
+
+Save the plot
+```{r, eval = FALSE}
+showtext::showtext_opts(dpi = 300)
+ggplot2::ggsave(
+  plot = p1,
+  filename = "data_export/plot_simple_histogram.pdf", device = "pdf",
+  scale = 3, units = "cm", width = 10, height = 5, dpi = 300
+)
+showtext::showtext_opts(dpi = 96)
+```
+
+#### Spatial distribution of Indicators
+
+Read Naturräume
+```{r}
+regions_natur <- sf::read_sf(here::here("data_export", "Naturraum_Reg_DTK50.shp"))
+```
+
+
+Prepare the data for plotting
+```{r}
+plot_data <- observed_change_table |>
+  add_indicator_names() |>
+  use_core_indicators_only() |>
+  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp"), as_sf = TRUE) |>
+  dplyr::group_by(indicator_name) |>
+  dplyr::group_split()
+```
+
+Create the plots
+```{r}
+plot_list <- plot_data |>
+  purrr::map(make_plot_maps, regions_natur)
+```
+
+See one of the plots
+```{r}
+plot_list[[1]]
+```
+
+Save the plots
+```{r, eval = FALSE}
+showtext::showtext_opts(dpi = 300)
+plot_list |>
+  purrr::map2(
+    c("data_export/plot_maps") |> paste0(seq_along(plot_list), ".pdf"),
+    ~ .x |> ggplot2::ggsave(
+      filename = .y, device = "pdf",
+      scale = 2, units = "cm", width = 8, height = 10, dpi = 300
+    )
+  )
+showtext::showtext_opts(dpi = 96)
+```
+
+
+#### Detailed Distributions of Indicators
 
 We first add indicator names with `add_indicator_names()`, filter for core indicators with `use_core_indicators_only()` and add geological context for grouping and analysis with `add_geo_context()`. Here you need to provide the filepath to the Shapefile that holds the contextual data for the observation wells. In this case, the Shape file is located in the subfolder `data_export` of the project directory.
 ```{r}

@@ -249,7 +249,94 @@ sysfonts::font_add_google("Abel", "base_font")
 showtext::showtext_auto()
 ```
 
-#### Distributions of Indicators
+#### Simple Distribution of Indicators
+
+Prepare the data for plotting
+
+``` r
+plot_data <- observed_change_table |>
+  add_indicator_names() |>
+  use_core_indicators_only() |>
+  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp"))
+```
+
+Create the plot
+
+``` r
+p1 <- plot_data |>
+  make_plot_simple_histogram(region_natur)
+```
+
+See the plot
+
+``` r
+p1
+```
+
+<img src="man/figures/README-unnamed-chunk-18-1.png" width="100%" />
+
+Save the plot
+
+``` r
+showtext::showtext_opts(dpi = 300)
+ggplot2::ggsave(
+  plot = p1,
+  filename = "data_export/plot_simple_histogram.pdf", device = "pdf",
+  scale = 3, units = "cm", width = 10, height = 5, dpi = 300
+)
+showtext::showtext_opts(dpi = 96)
+```
+
+#### Spatial distribution of Indicators
+
+Read Naturräume
+
+``` r
+regions_natur <- sf::read_sf(here::here("data_export", "Naturraum_Reg_DTK50.shp"))
+```
+
+Prepare the data for plotting
+
+``` r
+plot_data <- observed_change_table |>
+  add_indicator_names() |>
+  use_core_indicators_only() |>
+  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp"), as_sf = TRUE) |>
+  dplyr::group_by(indicator_name) |>
+  dplyr::group_split()
+```
+
+Create the plots
+
+``` r
+plot_list <- plot_data |>
+  purrr::map(make_plot_maps, regions_natur)
+```
+
+See one of the plots
+
+``` r
+plot_list[[1]]
+```
+
+<img src="man/figures/README-unnamed-chunk-23-1.png" width="100%" />
+
+Save the plots
+
+``` r
+showtext::showtext_opts(dpi = 300)
+plot_list |>
+  purrr::map2(
+    c("data_export/plot_maps") |> paste0(seq_along(plot_list), ".pdf"),
+    ~ .x |> ggplot2::ggsave(
+      filename = .y, device = "pdf",
+      scale = 2, units = "cm", width = 8, height = 10, dpi = 300
+    )
+  )
+showtext::showtext_opts(dpi = 96)
+```
+
+#### Detailed Distributions of Indicators
 
 We first add indicator names with `add_indicator_names()`, filter for
 core indicators with `use_core_indicators_only()` and add geological
@@ -274,7 +361,7 @@ plot_data |>
   make_plot_distribution_vs(region_natur, indicator_name)
 ```
 
-<img src="man/figures/README-unnamed-chunk-17-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-26-1.png" width="100%" />
 
 2.  Distribution grouped by Klimaräume
 
@@ -283,7 +370,7 @@ plot_data |>
   make_plot_distribution_vs(region_climate, indicator_name)
 ```
 
-<img src="man/figures/README-unnamed-chunk-18-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-27-1.png" width="100%" />
 
 3.  Distribution grouped by depth of screen top
 
@@ -292,7 +379,7 @@ plot_data |>
   make_plot_distribution_vs(screen_top, indicator_name)
 ```
 
-<img src="man/figures/README-unnamed-chunk-19-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-28-1.png" width="100%" />
 
 4.  Distribution grouped by depth to groundwater level
 
@@ -301,7 +388,7 @@ plot_data |>
   make_plot_distribution_vs(depth_to_gwl, indicator_name)
 ```
 
-<img src="man/figures/README-unnamed-chunk-20-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-29-1.png" width="100%" />
 
 5.  Distribution grouped by climate model
 
@@ -310,7 +397,7 @@ plot_data |>
   make_plot_distribution_vs(climate_model_name, indicator_name)
 ```
 
-<img src="man/figures/README-unnamed-chunk-21-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-30-1.png" width="100%" />
 
 #### Heatmaps of timeseries
 
@@ -335,7 +422,7 @@ plot_data |>
   make_plot_timeseries_heatmap(region_natur)
 ```
 
-<img src="man/figures/README-unnamed-chunk-23-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-32-1.png" width="100%" />
 
 2.  Heatmaps grouped by Klimaräume
 
@@ -344,7 +431,7 @@ plot_data |>
   make_plot_timeseries_heatmap(region_climate)
 ```
 
-<img src="man/figures/README-unnamed-chunk-24-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-33-1.png" width="100%" />
 
 3.  Heatmaps grouped by depth of screen top
 
@@ -353,7 +440,7 @@ plot_data |>
   make_plot_timeseries_heatmap(screen_top)
 ```
 
-<img src="man/figures/README-unnamed-chunk-25-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-34-1.png" width="100%" />
 
 4.  Heatmaps grouped by depth to groundwater level
 
@@ -362,4 +449,4 @@ plot_data |>
   make_plot_timeseries_heatmap(depth_to_gwl)
 ```
 
-<img src="man/figures/README-unnamed-chunk-26-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-35-1.png" width="100%" />

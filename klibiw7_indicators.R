@@ -11,7 +11,7 @@ data_gwl <- data_gwl |>
 
 data_gwl |> arrow::write_parquet("data_export/data_gwl.parquet")
 data_gwl <- arrow::read_parquet("data_export/data_gwl.parquet")
-data_gwl |> readr::write_csv2("result_gwl_historic_and_projected.csv")
+data_gwl |> readr::write_csv2("data_export/result_gwl_historic_and_projected.csv")
 
 data_gwl_ref <- data_gwl |>
   filter_criterion_model_performance() |>
@@ -25,7 +25,7 @@ indicators_summary <- data_gwl_ref |>
 
 indicators_summary <- indicators_summary |>
   unnest_indicator_3_3()
-indicators_summary |> readr::write_csv2("result_indicators.csv")
+indicators_summary |> readr::write_csv2("data_export/result_indicators.csv")
 
 indicators_summary_observed <- indicators_summary |>
   split_observed()
@@ -36,13 +36,13 @@ projections_change_table <-
   indicators_summary_projections |>
     make_projections_change_table()
 
-projections_change_table |> readr::write_csv2("result_relative_changes.csv")
+projections_change_table |> readr::write_csv2("data_export/result_relative_changes.csv")
 
 observed_change_table <-
   indicators_summary_observed |>
     make_observed_change_table(projections_change_table)
 
-observed_change_table |> readr::write_csv2("result_absolute_changes_and_values.csv")
+observed_change_table |> readr::write_csv2("data_export/result_absolute_changes_and_values.csv")
 
 ###### Start Plotting
 sysfonts::font_add_google("Abel", "base_font")
