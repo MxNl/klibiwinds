@@ -1,4 +1,4 @@
-#' make_plot_maps
+#' make_plot_maps_hex
 #'
 #' @param plot_data text...
 #' @param regions text...
@@ -6,7 +6,7 @@
 #'
 #' @return
 #' @export
-make_plot_maps <- function(plot_data, regions, absolute_value_or_change = "change") {
+make_plot_maps_hex <- function(plot_data, regions, absolute_value_or_change = "change") {
   if (!(absolute_value_or_change %in% c("value", "change"))) {
     stop("Please provide on of the following values for the argument absolute_value_or_change: value or change")
   }
@@ -16,7 +16,8 @@ make_plot_maps <- function(plot_data, regions, absolute_value_or_change = "chang
   legend_title <- plot_data |>
     dplyr::mutate(legend_name = stringr::str_c(indicator_name, " in ", unit)) |>
     dplyr::pull(legend_name) |>
-    unique()
+    unique() |>
+    stringr::str_replace_all("- ", "")
 
   plot_data <- plot_data |>
     dplyr::select(

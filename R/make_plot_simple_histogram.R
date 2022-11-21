@@ -26,6 +26,13 @@ make_plot_simple_histogram <- function(plot_data, group_var, absolute_value_or_c
     ) |>
     tidyr::pivot_longer(cols = dplyr::contains(absolute_value_or_change), names_to = "period") |>
     dplyr::mutate(period = period |> stringr::str_remove(string_to_remove)) |>
+    dplyr::mutate(
+      region_natur = factor(
+        region_natur,
+        levels = c("Inseln", "Marschen", "Niederungsgebiete", "Geestgebiete", "B\U00F6rden", "Bergland")
+      ) |>
+        forcats::fct_rev()
+    ) |>
     z_to_yearrange_period_names() |>
     dplyr::group_by(period, indicator_name, !!group_var) |>
     dplyr::summarise(
@@ -71,8 +78,16 @@ make_plot_simple_histogram <- function(plot_data, group_var, absolute_value_or_c
         scales = "free_x",
         labeller = ggplot2::label_wrap_gen(15)
       ) +
-      paletteer::scale_colour_paletteer_d(
-        "beyonce::X54",
+      # paletteer::scale_colour_paletteer_d(
+      #   "beyonce::X54",
+      #   guide = ggplot2::guide_legend(
+      #     reverse = TRUE,
+      #     title.position = "top",
+      #     ncol = 1
+      #   )
+      # ) +
+      ggplot2::scale_colour_manual(
+        values = c("#65A8AB", "#9FBAAB"),
         guide = ggplot2::guide_legend(
           reverse = TRUE,
           title.position = "top",

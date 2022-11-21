@@ -19,6 +19,32 @@ data_gwl_ref <- data_gwl |>
   add_reference_period_column() |>
   filter_criterion_incomplete_z1_period()
 
+#Data export Tobias
+data_gwl |>
+  add_reference_period_column() |>
+  dplyr::rename(
+    MEST_ID = well_id,
+    GWL.CALC = gwl,
+    DATUM = date,
+    Projektion = climate_model_name
+  ) |>
+  dplyr::mutate(
+    Institution = "BGR",
+    JAHR = lubridate::year(DATUM),
+    MONAT = lubridate::month(DATUM)
+  ) |>
+  dplyr::relocate(
+    MEST_ID,
+    JAHR,
+    MONAT,
+    GWL.CALC,
+    DATUM,
+    Projektion,
+    Institution
+  ) |>
+  saveRDS("data_export/result_gwl_historic_and_projected_tobias.Rds")
+
+
 indicators_summary <- data_gwl_ref |>
   make_summary_table() |>
   add_indicators_all(data_gwl_ref)
@@ -83,12 +109,34 @@ plot_data <- observed_change_table |>
   dplyr::group_split()
 
 plot_list <- plot_data |>
-  purrr::map(make_plot_maps, regions_natur)
+  purrr::map(make_plot_maps_hex, regions_natur)
 
 showtext::showtext_opts(dpi = 300)
 plot_list |>
   purrr::map2(
     c("data_export/plot_maps") |> paste0(seq_along(plot_list), ".pdf"),
+    ~ .x |> ggplot2::ggsave(
+      filename = .y, device = "pdf",
+      scale = 2, units = "cm", width = 8, height = 10, dpi = 300
+    )
+  )
+showtext::showtext_opts(dpi = 96)
+
+###### Plot maps points
+plot_data <- observed_change_table |>
+  add_indicator_names() |>
+  use_core_indicators_only() |>
+  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp"), as_sf = TRUE) |>
+  dplyr::group_by(indicator_name) |>
+  dplyr::group_split()
+
+plot_list <- plot_data |>
+  purrr::map(make_plot_maps_points, regions_natur)
+
+showtext::showtext_opts(dpi = 300)
+plot_list |>
+  purrr::map2(
+    c("data_export/plot_maps_points") |> paste0(seq_along(plot_list), ".pdf"),
     ~ .x |> ggplot2::ggsave(
       filename = .y, device = "pdf",
       scale = 2, units = "cm", width = 8, height = 10, dpi = 300
