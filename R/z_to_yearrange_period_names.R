@@ -7,7 +7,7 @@
 #'
 
 z_to_yearrange_period_names <- function(x_long_format) {
-  new_perido_names <- reference_periods |>
+  new_period_names <- reference_periods |>
     dplyr::group_by(reference_period) |>
     dplyr::filter(year %in% range(year)) |>
     dplyr::mutate(start_end = c("start", "end")) |>
@@ -18,9 +18,9 @@ z_to_yearrange_period_names <- function(x_long_format) {
   x_long_format |>
     dplyr::mutate(
       period = dplyr::case_when(
-        period == 1 ~ new_perido_names[1],
-        period == 2 ~ new_perido_names[2],
-        period == 3 ~ new_perido_names[3],
+        period == 1 ~ new_period_names[1],
+        period == 2 ~ new_period_names[2],
+        period == 3 ~ new_period_names[3],
       ),
       period = period |>
         forcats::as_factor() |>
