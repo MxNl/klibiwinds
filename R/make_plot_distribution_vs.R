@@ -43,7 +43,13 @@ make_plot_distribution_vs <- function(plot_data, var_rows, var_columns, absolute
       # " / ",
       # n() / length(unique(period)) / n() / length(unique(period))
     )) |>
-    dplyr::ungroup()
+    dplyr::ungroup() |>
+    dplyr::mutate(
+      region_natur = factor(
+        region_natur,
+        levels = c("Inseln", "Marschen", "Niederungsgebiete", "Geestgebiete", "Börden", "Bergland")
+      )
+    )
 
   plot_data |>
     ggplot2::ggplot(

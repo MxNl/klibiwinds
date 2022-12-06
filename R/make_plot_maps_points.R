@@ -44,6 +44,11 @@ make_plot_maps_points <- function(plot_data, regions, absolute_value_or_change =
   #   sf::st_cast("LINESTRING") |>
   #   sf::st_intersection(plot_data_grid)
 
+  oob_limits <- plot_data |>
+    dplyr::pull(value) |>
+    quantile(c(0.005, 0.995)) |>
+    purrr::map_dbl(round_nextsignif)
+
   plot_data |>
     ggplot2::ggplot() +
     ggplot2::geom_sf(
@@ -76,6 +81,9 @@ make_plot_maps_points <- function(plot_data, regions, absolute_value_or_change =
       mid='white',
       high='darkblue',
       midpoint=0,
+      limits = oob_limits,
+      oob = scales::squish,
+      labels = labels_add_text_to_limits,
       guide = ggplot2::guide_coloursteps(
         barheight = .3,
         barwidth = 20,
@@ -99,7 +107,7 @@ make_plot_maps_points <- function(plot_data, regions, absolute_value_or_change =
       axis.text.x = ggplot2::element_blank(),
       axis.text.y = ggplot2::element_blank(),
       legend.title = ggplot2::element_text(hjust = 0.5),
-      plot.margin = ggplot2::margin(.5, 0, .5, 0, "cm"),
+      # plot.margin = ggplot2::margin(.5, 0, .5, 0, "cm"),
       legend.position = "top",
       axis.title.x = ggplot2::element_text(size = 9, vjust = -1),
       text = ggplot2::element_text(family = "base_font", size = 10),
@@ -107,6 +115,11 @@ make_plot_maps_points <- function(plot_data, regions, absolute_value_or_change =
       title = ggplot2::element_text(hjust = .5, size = 11),
       strip.background = ggplot2::element_rect(fill = "grey90", colour = NA),
       strip.text = ggplot2::element_text(margin = ggplot2::margin(rep_len(3, 4))),
-      strip.text.y = ggplot2::element_text(angle = 0)
+      strip.text.y = ggplot2::element_text(angle = 0),
+      plot.margin = ggplot2::margin(t = 0,
+                           r = 0,
+                           b = 0,
+                           l = 0,
+                           unit = "cm")
     )
 }

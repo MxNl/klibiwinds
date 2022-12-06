@@ -60,6 +60,17 @@ make_plot_maps_hex <- function(plot_data, regions, absolute_value_or_change = "c
   #   sf::st_cast("LINESTRING") |>
   #   sf::st_intersection(plot_data_grid)
 
+#   oob_limits <- plot_data |>
+#     dplyr::group_by(name) |>
+# dplyr::group_split() |>
+#     purrr::map(dplyr::pull, value) |>
+#     purrr::map(quantile, c(0.001, 0.999))
+
+  oob_limits <- plot_data |>
+    dplyr::pull(value) |>
+    quantile(c(0.005, 0.995)) |>
+    purrr::map_dbl(round_nextsignif)
+
   plot_data |>
     ggplot2::ggplot() +
     ggplot2::geom_sf(
@@ -73,15 +84,6 @@ make_plot_maps_hex <- function(plot_data, regions, absolute_value_or_change = "c
       colour = "grey",
       fill = NA
     ) +
-    # ggplot2::geom_sf(
-    #   data = regions_overlay,
-    #   size = 0.5,
-    #   colour = "white",
-    #   fill = NA
-    # ) +
-    # ggplot2::geom_sf(
-    #   ggplot2::aes(colour = value)
-    # ) +
     ggplot2::facet_grid(
       forcats::fct_rev(name) ~ forcats::fct_rev(period),
       labeller = ggplot2::as_labeller(stringr::str_to_sentence)
@@ -92,6 +94,9 @@ make_plot_maps_hex <- function(plot_data, regions, absolute_value_or_change = "c
       mid='white',
       high='darkblue',
       midpoint=0,
+      limits = oob_limits,
+      oob = scales::squish,
+      labels = labels_add_text_to_limits,
       guide = ggplot2::guide_coloursteps(
         barheight = .3,
         barwidth = 20,

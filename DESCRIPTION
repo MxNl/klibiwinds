@@ -13,13 +13,18 @@ URL: https://github.com/MxNl/klibiwinds
 BugReports: https://github.com/MxNl/klibiwinds/issues
 Suggests: 
     summarytools,
+    smoothr,
+    rmapshaper,
     usethis,
     showtext
 Imports: 
     lubridate,
+    showtext,
     ggridges,
+    ggstance,
     BBmisc,
     patchwork,
+    ggnewscale,
     readr,
     sf,
     dplyr,
@@ -35,7 +40,8 @@ Imports:
     data.table,
     janitor,
     forcats,
-    paletteer
+    paletteer,
+    rSW2utils
 Depends: 
     R (>= 4.0)
 LazyData: true

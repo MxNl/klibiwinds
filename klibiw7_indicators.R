@@ -1,3 +1,6 @@
+
+# Analysis ----------------------------------------------------------
+
 filepath_projections <- "D:/Data/students/mariana/Results/Projections_hist"
 filepath_historic <- "J:/PROJEKTE/KliBiW7/Daten/Grundwasserstandsdaten/Einzelmessstellen"
 
@@ -19,7 +22,7 @@ data_gwl_ref <- data_gwl |>
   add_reference_period_column() |>
   filter_criterion_incomplete_z1_period()
 
-#Data export Tobias
+##### Data export Tobias
 data_gwl |>
   distinct(well_id) |>
   inner_join(lbeg_wells)
@@ -47,7 +50,7 @@ data_gwl |>
     Institution
   ) |>
   saveRDS("data_export/result_gwl_historic_and_projected_tobias.Rds")
-
+##### end
 
 indicators_summary <- data_gwl_ref |>
   make_summary_table() |>
@@ -76,7 +79,8 @@ observed_change_table <-
 
 observed_change_table |> readr::write_csv2("data_export/result_absolute_changes_and_values.csv")
 
-###### Start Plotting
+# Plotting ----------------------------------------------------------
+
 sysfonts::font_add_google("Abel", "base_font")
 showtext::showtext_auto()
 
@@ -104,6 +108,14 @@ list(p1) |>
       scale = 3, units = "cm", width = 10, height = 5, dpi = 300
     )
   )
+list(p1) |>
+  purrr::map2(
+    c("data_export/plot_simple_histogram") |> paste0(".png"),
+    ~ .x |> ggplot2::ggsave(
+      filename = .y, device = "png",
+      scale = 3, units = "cm", width = 10, height = 5, dpi = 300
+    )
+  )
 showtext::showtext_opts(dpi = 96)
 
 ###### Plot maps
@@ -123,6 +135,14 @@ plot_list |>
     c("data_export/plot_maps") |> paste0(seq_along(plot_list), ".pdf"),
     ~ .x |> ggplot2::ggsave(
       filename = .y, device = "pdf",
+      scale = 2, units = "cm", width = 8, height = 10, dpi = 300
+    )
+  )
+plot_list |>
+  purrr::map2(
+    c("data_export/plot_maps") |> paste0(seq_along(plot_list), ".png"),
+    ~ .x |> ggplot2::ggsave(
+      filename = .y, device = "png",
       scale = 2, units = "cm", width = 8, height = 10, dpi = 300
     )
   )
@@ -146,6 +166,14 @@ plot_list |>
     ~ .x |> ggplot2::ggsave(
       filename = .y, device = "pdf",
       scale = 2, units = "cm", width = 8, height = 10, dpi = 300
+    )
+  )
+plot_list |>
+  purrr::map2(
+    c("data_export/plot_maps_points") |> paste0(seq_along(plot_list), ".png"),
+    ~ .x |> ggplot2::ggsave(
+      filename = .y, device = "png",
+      scale = 2, units = "cm", width = 8, height = 10, dpi = 300, bg = "white"
     )
   )
 showtext::showtext_opts(dpi = 96)
@@ -176,6 +204,14 @@ list(p1, p2, p3, p4, p5) |>
       scale = 2.5, units = "cm", width = 12, height = 6, dpi = 300
     )
   )
+list(p1, p2, p3, p4, p5) |>
+  purrr::map2(
+    c("data_export/plot_distribution_vs") |> paste(1:5, sep = "_") |> paste0(".png"),
+    ~ .x |> ggplot2::ggsave(
+      filename = .y, device = "png",
+      scale = 2.5, units = "cm", width = 12, height = 6, dpi = 300
+    )
+  )
 showtext::showtext_opts(dpi = 96)
 
 
@@ -201,6 +237,14 @@ list(p1, p2, p3, p4) |>
     c("data_export/plot_timeseries_heatmap") |> paste(1:4, sep = "_") |> paste0(".pdf"),
     ~ .x |> ggplot2::ggsave(
       filename = .y, device = "pdf",
+      scale = 1.8, units = "cm", width = 10, height = 10, dpi = 300
+    )
+  )
+list(p1, p2, p3, p4) |>
+  purrr::map2(
+    c("data_export/plot_timeseries_heatmap") |> paste(1:4, sep = "_") |> paste0(".png"),
+    ~ .x |> ggplot2::ggsave(
+      filename = .y, device = "png",
       scale = 1.8, units = "cm", width = 10, height = 10, dpi = 300
     )
   )
@@ -285,6 +329,11 @@ showtext::showtext_opts(dpi = 300)
 p1 |>
   ggplot2::ggsave(
     filename = "data_export/plot_timeseries_heatmap_single.pdf", device = "pdf",
+    scale = 1.8, units = "cm", width = 3, height = 10, dpi = 300
+  )
+p1 |>
+  ggplot2::ggsave(
+    filename = "data_export/plot_timeseries_heatmap_single.png", device = "png",
     scale = 1.8, units = "cm", width = 3, height = 10, dpi = 300
   )
 showtext::showtext_opts(dpi = 96)
@@ -520,6 +569,380 @@ list(p1) |>
     ~ .x |> ggplot2::ggsave(
       filename = .y, device = "pdf",
       scale = 3, units = "cm", width = 6, height = 6, dpi = 300
+    )
+  )
+list(p1) |>
+  purrr::map2(
+    c("data_export/absolute_values_annual_dynamic") |> paste0(".png"),
+    ~ .x |> ggplot2::ggsave(
+      filename = .y, device = "png",
+      scale = 3, units = "cm", width = 6, height = 6, dpi = 300
+    )
+  )
+showtext::showtext_opts(dpi = 96)
+
+
+
+# Start experimental ------------------------------------------------------
+
+###
+plot_data <- observed_change_table |>
+  add_indicator_names() |>
+  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp")) |>
+  dplyr::filter(stringr::str_detect(indicator, "indicator_33")) |>
+  mutate(month = stringr::str_remove_all(indicator, "indicator_33_mean_month") |> as.integer()) |>
+  select(
+    well_id,
+    climate_model_name,
+    indicator, indicator_name,
+    contains("absolute_change"),
+    region_climate
+  ) |>
+  tidyr::pivot_longer(cols = contains("absolute_change"), names_to = "period") |>
+  dplyr::mutate(period = period |> stringr::str_remove("absolute_change_z")) |>
+  z_to_yearrange_period_names() |>
+  # group_by(well_id, region_climate) |>
+  # mutate(value = value - mean(value)) |>
+  group_by(indicator, period, region_climate) |>
+  summarise(value = mean(value), region_climate = unique(region_climate), .groups = "drop") |>
+  mutate(month = stringr::str_remove(
+    indicator, "indicator_33_mean_month"
+  ) |>
+    factor(levels = as.character(1:12)))
+
+plot_data_z1 <- indicators_summary_observed |>
+  select(
+    well_id, climate_model_name, reference_period,
+    contains("indicator_33")
+  ) |>
+  dplyr::filter(
+    # stringr::str_detect(indicator, "indicator_33"),
+    reference_period == "Z1"
+  ) |>
+  tidyr::pivot_longer(cols = contains("indicator"), names_to = "indicator", values_to = "value_z1") |>
+  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp")) |>
+  dplyr::mutate(period = reference_period |> stringr::str_remove("Z")) |>
+  select(-reference_period) |>
+  z_to_yearrange_period_names() |>
+  group_by(well_id, region_climate) |>
+  mutate(value_z1 = value_z1 - mean(value_z1)) |>
+  group_by(indicator, period, region_climate) |>
+  summarise(value_z1 = mean(value_z1), region_climate = unique(region_climate), .groups = "drop") |>
+  mutate(month = stringr::str_remove(
+    indicator, "indicator_33_mean_month"
+  ) |>
+    factor(levels = as.character(1:12))) |>
+  rename(period_z1 = period)
+
+plot_data <- plot_data |>
+  left_join(plot_data_z1, by = c("indicator", "region_climate", "month")) |>
+  mutate(
+    month = stringr::str_pad(month, 2, "left", pad = 0),
+    month = lubridate::ymd(paste("2000-", month, "-01"))
+  )
+
+
+p1 <- plot_data |>
+  ggplot() +
+  # ggh4x::stat_difference(aes(x = month, ymin = value_z1, ymax = value)) +
+  geom_line(
+    aes(month, value_z1),
+    linetype = "dashed",
+    colour = "grey"
+  ) +
+  geom_segment(
+    aes(x = month, xend = month, y = value_z1, yend = value + value_z1),
+    size = 1, colour = "grey"
+  ) +
+  geom_point(
+    aes(month, value + value_z1, colour = value_z1 <= value + value_z1),
+    show.legend = FALSE,
+    size = 2
+  ) +
+  scale_y_continuous(expand = c(.05, .05)) +
+  scale_colour_manual(values = c("#E26831", "#829D36")) +
+  scale_x_date(date_breaks = "month", labels = scales::label_date(format = "%b")) +
+  facet_grid(region_climate ~ period, labeller = ggplot2::label_wrap_gen(15), scales = "free_y") +
+  labs(y = "Mean GWL [m]") +
+  theme_minimal() +
+  theme(
+    axis.title.x = element_blank(),
+    text = element_text(family = "base_font"),
+    panel.grid.major.x = element_blank(),
+    strip.background = ggplot2::element_rect(fill = "grey90", colour = NA),
+    strip.text = ggplot2::element_text(
+      lineheight = 1.25,
+      margin = ggplot2::margin(rep_len(3, 4))
+    ),
+    strip.text.y = ggplot2::element_text(angle = 0),
+    panel.spacing = unit(7, "mm"),
+    panel.grid.minor.x = element_blank()
+  )
+
+showtext::showtext_opts(dpi = 300)
+list(p1) |>
+  purrr::map2(
+    c("data_export/absolute_values_annual_dynamic") |> paste0(".pdf"),
+    ~ .x |> ggplot2::ggsave(
+      filename = .y, device = "pdf",
+      scale = 3, units = "cm", width = 6, height = 6, dpi = 300
+    )
+  )
+showtext::showtext_opts(dpi = 96)
+
+####
+
+plot_data <- observed_change_table |>
+  add_indicator_names() |>
+  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp")) |>
+  dplyr::filter(stringr::str_detect(indicator, "indicator_33")) |>
+  dplyr::mutate(month = stringr::str_remove_all(indicator, "indicator_33_mean_month") |> as.integer()) |>
+  dplyr::select(
+    well_id,
+    climate_model_name,
+    indicator, indicator_name,
+    contains("absolute_change"),
+    region_natur
+  ) |>
+  tidyr::pivot_longer(cols = contains("absolute_change"), names_to = "period") |>
+  dplyr::mutate(period = period |> stringr::str_remove("absolute_change_z")) |>
+  z_to_yearrange_period_names() |>
+  # group_by(well_id, region_climate) |>
+  # mutate(value = value - mean(value)) |>
+  dplyr::group_by(indicator, period, region_natur) |>
+  dplyr::summarise(value = mean(value), region_natur = unique(region_natur), .groups = "drop") |>
+  dplyr::mutate(month = stringr::str_remove(
+    indicator, "indicator_33_mean_month"
+  ) |>
+    factor(levels = as.character(1:12)))
+
+plot_data_z1 <- indicators_summary_observed |>
+  dplyr::select(
+    well_id, climate_model_name, reference_period,
+    contains("indicator_33")
+  ) |>
+  dplyr::filter(
+    # stringr::str_detect(indicator, "indicator_33"),
+    reference_period == "Z1"
+  ) |>
+  tidyr::pivot_longer(cols = dplyr::contains("indicator"), names_to = "indicator", values_to = "value_z1") |>
+  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp")) |>
+  dplyr::mutate(period = reference_period |> stringr::str_remove("Z")) |>
+  dplyr::select(-reference_period) |>
+  z_to_yearrange_period_names() |>
+  dplyr::group_by(well_id, region_natur) |>
+  dplyr::mutate(value_z1 = value_z1 - mean(value_z1)) |>
+  dplyr::group_by(indicator, period, region_natur) |>
+  dplyr::summarise(value_z1 = mean(value_z1), region_natur = unique(region_natur), .groups = "drop") |>
+  dplyr::mutate(month = stringr::str_remove(
+    indicator, "indicator_33_mean_month"
+  ) |>
+    factor(levels = as.character(1:12))) |>
+  dplyr::rename(period_z1 = period)
+
+plot_data <- plot_data |>
+  dplyr::left_join(plot_data_z1, by = c("indicator", "region_natur", "month")) |>
+  dplyr::mutate(
+    month = stringr::str_pad(month, 2, "left", pad = 0),
+    month = lubridate::ymd(paste("2000-", month, "-01"))
+  ) |>
+  dplyr::mutate(
+    region_natur = factor(
+      region_natur,
+      levels = c("Inseln", "Marschen", "Niederungsgebiete", "Geestgebiete", "B\U00F6rden", "Bergland")
+    )
+)
+
+
+p1 <- plot_data |>
+  ggplot() +
+  ggh4x::stat_difference(
+    aes(x = month, ymax = value_z1, ymin = value + value_z1),
+                         alpha = .7,
+    levels = c("Absenkung", "Anstieg")) +
+  scale_colour_manual(values = c("#829D36", "#E26831")) +
+  ggnewscale::new_scale_colour() +
+  geom_line(
+    aes(month, value_z1, colour = "Referenzzeitraum"),
+    linetype = "dashed"
+  ) +
+  scale_colour_manual(values = "grey60") +
+  ggnewscale::new_scale_colour() +
+  geom_line(
+    aes(month, value + value_z1, colour = "Zeitraum Vorhersage")
+  ) +
+  scale_colour_manual(values = "grey30") +
+  scale_y_continuous(expand = c(.05, .05)) +
+  scale_x_date(date_breaks = "month", labels = scales::label_date(format = "%b")) +
+  facet_grid(region_natur ~ period, labeller = ggplot2::label_wrap_gen(15)) +
+  labs(y = "Grundwasserstand, normiert [m]") +
+  guides(colour = guide_legend(direction = "horizontal")) +
+  theme_minimal() +
+  theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_text(vjust = 4),
+    # axis.text.x = element_text(size = 8),
+    text = element_text(family = "base_font", size = 20),
+    # panel.grid.major.x = element_blank(),
+    strip.background = ggplot2::element_rect(fill = "grey90", colour = NA),
+    strip.text = ggplot2::element_text(
+      lineheight = 1.25,
+      margin = ggplot2::margin(rep_len(3, 4))
+    ),
+    strip.text.y = ggplot2::element_text(angle = 0),
+    panel.spacing = unit(7, "mm"),
+    panel.grid.minor.x = element_blank(),
+    legend.title = element_blank(),
+    legend.position = "top",
+    plot.margin = margin(0, 1, 0, 1, "cm")
+  )
+
+showtext::showtext_opts(dpi = 300)
+list(p1) |>
+  purrr::map2(
+    c("data_export/absolute_values_annual_dynamic_norm_diff") |> paste0(".pdf"),
+    ~ .x |> ggplot2::ggsave(
+      filename = .y, device = "pdf",
+      scale = 3, units = "cm", width = 10, height = 8, dpi = 300
+    )
+  )
+showtext::showtext_opts(dpi = 300)
+list(p1) |>
+  purrr::map2(
+    c("data_export/absolute_values_annual_dynamic_norm_diff") |> paste0(".png"),
+    ~ .x |> ggplot2::ggsave(
+      filename = .y, device = "png",
+      scale = 3, units = "cm", width = 10, height = 8, dpi = 300
+    )
+  )
+showtext::showtext_opts(dpi = 96)
+
+############ Same but with min und max
+
+plot_data <- observed_change_table |>
+  add_indicator_names() |>
+  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp")) |>
+  dplyr::filter(stringr::str_detect(indicator, "indicator_33")) |>
+  dplyr::mutate(month = stringr::str_remove_all(indicator, "indicator_33_mean_month") |> as.integer()) |>
+  dplyr::select(
+    well_id,
+    climate_model_name,
+    indicator, indicator_name,
+    contains("absolute_change"),
+    region_natur
+  ) |>
+  tidyr::pivot_longer(cols = contains("absolute_change"), names_to = "period") |>
+  dplyr::mutate(period = period |> stringr::str_remove("absolute_change_z")) |>
+  z_to_yearrange_period_names() |>
+  # group_by(well_id, region_climate) |>
+  # mutate(value = value - mean(value)) |>
+  dplyr::group_by(indicator, period, region_natur) |>
+  dplyr::summarise(
+    value_mean = mean(value),
+    value_min = min(value),
+    value_max = max(value),
+    region_natur = unique(region_natur),
+    .groups = "drop"
+    ) |>
+  dplyr::mutate(month = stringr::str_remove(
+    indicator, "indicator_33_mean_month"
+  ) |>
+    factor(levels = as.character(1:12))) |>
+  pivot_longer(cols = contains("value_"))
+
+plot_data_z1 <- indicators_summary_observed |>
+  dplyr::select(
+    well_id, climate_model_name, reference_period,
+    contains("indicator_33")
+  ) |>
+  dplyr::filter(
+    # stringr::str_detect(indicator, "indicator_33"),
+    reference_period == "Z1"
+  ) |>
+  tidyr::pivot_longer(cols = dplyr::contains("indicator"), names_to = "indicator", values_to = "value_z1") |>
+  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp")) |>
+  dplyr::mutate(period = reference_period |> stringr::str_remove("Z")) |>
+  dplyr::select(-reference_period) |>
+  z_to_yearrange_period_names() |>
+  dplyr::group_by(well_id, region_natur) |>
+  dplyr::mutate(value_z1 = value_z1 - mean(value_z1)) |>
+  dplyr::group_by(indicator, period, region_natur) |>
+  dplyr::summarise(
+    value_mean = mean(value_z1),
+    value_min = min(value_z1),
+    value_max = max(value_z1),
+    region_natur = unique(region_natur),
+    .groups = "drop"
+    ) |>
+  dplyr::mutate(month = stringr::str_remove(
+    indicator, "indicator_33_mean_month"
+  ) |>
+    factor(levels = as.character(1:12))) |>
+  dplyr::rename(period_z1 = period) |>
+  pivot_longer(cols = contains("value"), values_to = "value_z1")
+
+plot_data <- plot_data |>
+  dplyr::left_join(plot_data_z1, by = c("indicator", "region_natur", "month", "name")) |>
+  dplyr::mutate(
+    month = stringr::str_pad(month, 2, "left", pad = 0),
+    month = lubridate::ymd(paste("2000-", month, "-01"))
+  ) |>
+  dplyr::mutate(
+    region_natur = factor(
+      region_natur,
+      levels = c("Inseln", "Marschen", "Niederungsgebiete", "Geestgebiete", "B\U00F6rden", "Bergland")
+    )
+)
+
+
+p1 <- plot_data |>
+  ggplot(aes(group = name)) +
+  ggh4x::stat_difference(
+    aes(x = month, ymax = value_z1, ymin = value + value_z1),
+                         alpha = .7,
+    levels = c("Absenkung", "Anstieg")) +
+  scale_colour_manual(values = c("#829D36", "#E26831")) +
+  ggnewscale::new_scale_colour() +
+  geom_line(
+    aes(month, value_z1, colour = "Referenzzeitraum"),
+    linetype = "dashed"
+  ) +
+  scale_colour_manual(values = "grey60") +
+  ggnewscale::new_scale_colour() +
+  geom_line(
+    aes(month, value + value_z1, colour = "Zeitraum Vorhersage")
+  ) +
+  scale_colour_manual(values = "grey30") +
+  scale_y_continuous(expand = c(.05, .05)) +
+  scale_x_date(date_breaks = "month", labels = scales::label_date(format = "%b")) +
+  facet_grid(region_natur ~ period, labeller = ggplot2::label_wrap_gen(15), scales = "free") +
+  labs(y = "Grundwasserstand, normiert [m]") +
+  guides(colour = guide_legend(direction = "horizontal")) +
+  theme_minimal() +
+  theme(
+    axis.title.x = element_blank(),
+    # axis.text.x = element_text(size = 8),
+    text = element_text(family = "base_font", size = 20),
+    # panel.grid.major.x = element_blank(),
+    strip.background = ggplot2::element_rect(fill = "grey90", colour = NA),
+    strip.text = ggplot2::element_text(
+      lineheight = 1.25,
+      margin = ggplot2::margin(rep_len(3, 4))
+    ),
+    strip.text.y = ggplot2::element_text(angle = 0),
+    panel.spacing = unit(7, "mm"),
+    panel.grid.minor.x = element_blank(),
+    legend.title = element_blank(),
+    legend.position = "top"
+  )
+
+showtext::showtext_opts(dpi = 300)
+list(p1) |>
+  purrr::map2(
+    c("data_export/absolute_values_annual_dynamic_norm_diff") |> paste0(".pdf"),
+    ~ .x |> ggplot2::ggsave(
+      filename = .y, device = "pdf",
+      scale = 3, units = "cm", width = 10, height = 8, dpi = 300
     )
   )
 showtext::showtext_opts(dpi = 96)

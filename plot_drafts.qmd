@@ -3,7 +3,7 @@ title: "Klibiwinds7 Results"
 subtitle: "Plot drafts"
 execute:
   warning: false
-  out.width> "100%"
+  out.width: "100%"
 format: 
   html:
     theme: materia
