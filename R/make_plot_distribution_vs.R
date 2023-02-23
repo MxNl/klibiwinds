@@ -47,7 +47,7 @@ make_plot_distribution_vs <- function(plot_data, var_rows, var_columns, absolute
     dplyr::mutate(
       region_natur = factor(
         region_natur,
-        levels = c("Inseln", "Marschen", "Niederungsgebiete", "Geestgebiete", "Börden", "Bergland")
+        levels = c("Inseln", "Marschen", "Niederungsgebiete", "Geestgebiete", "B\U00F6rden", "Bergland")
       )
     )
 

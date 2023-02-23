@@ -1,11 +1,9 @@
 #' labels_add_text_to_limits
 #'
-#' @param x
+#' @param x character vector containing the labels
 #'
 #' @return
 #' @export
-#'
-#' @examples
 labels_add_text_to_limits <- function(x) {
   x |>
     as.character() |>

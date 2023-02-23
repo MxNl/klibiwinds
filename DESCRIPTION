@@ -16,12 +16,15 @@ Suggests:
     smoothr,
     rmapshaper,
     usethis,
-    showtext
+    showtext,
+    styler
 Imports: 
     lubridate,
     showtext,
     ggridges,
     ggstance,
+    gghighlight,
+    scales,
     BBmisc,
     patchwork,
     ggnewscale,
@@ -39,9 +42,12 @@ Imports:
     psych,
     data.table,
     janitor,
+    rSW2utils,
     forcats,
     paletteer,
-    rSW2utils
+    ggtext
+Remotes:
+    DrylandEcology/rSW2utils
 Depends: 
     R (>= 4.0)
 LazyData: true

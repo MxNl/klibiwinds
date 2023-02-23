@@ -106,11 +106,11 @@ make_plot_maps_points <- function(plot_data, regions, absolute_value_or_change =
     ggplot2::theme(
       axis.text.x = ggplot2::element_blank(),
       axis.text.y = ggplot2::element_blank(),
-      legend.title = ggplot2::element_text(hjust = 0.5),
+      legend.title = ggplot2::element_text(hjust = 0.5, size = 14),
       # plot.margin = ggplot2::margin(.5, 0, .5, 0, "cm"),
       legend.position = "top",
       axis.title.x = ggplot2::element_text(size = 9, vjust = -1),
-      text = ggplot2::element_text(family = "base_font", size = 10),
+      text = ggplot2::element_text(family = "base_font", size = 14),
       axis.text = ggplot2::element_text(size = 8),
       title = ggplot2::element_text(hjust = .5, size = 11),
       strip.background = ggplot2::element_rect(fill = "grey90", colour = NA),

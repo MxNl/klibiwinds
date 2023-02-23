@@ -90,6 +90,99 @@ regions_natur <- regions_natur |>
   rmapshaper::ms_simplify(keep = 0.015, explode = TRUE, keep_shapes = TRUE) |>
   smoothr::smooth(method = "chaikin")
 
+###### Plot map overview
+plot_data <- observed_change_table |>
+  distinct(well_id, .keep_all = TRUE) |>
+  add_indicator_names() |>
+  use_core_indicators_only() |>
+  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp"), as_sf = TRUE) |>
+  dplyr::mutate(
+    region_natur = factor(
+      region_natur,
+      levels = c("Inseln", "Marschen", "Niederungsgebiete", "Geestgebiete", "B\U00F6rden", "Bergland")
+    )
+  )
+
+colours_regions <- c(
+  "#7495b5",
+  "#9ec44d",
+  "#8d53c6",
+  "#bf653d",
+  "#7f9372",
+  "#924773"
+)
+
+colours_regions <- c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f')
+
+plot_a <-
+  ggplot() +
+    geom_sf(data = regions_climate |> summarise(), colour = NA) +
+    geom_sf(data = plot_data, aes(colour = region_natur)) +
+    # geom_sf_label(data = regions_natur, aes(label = NATREGNAME)) +
+    labs(colour = "Raumzugehörigkeit") +
+    scale_colour_manual(values = colours_regions) +
+    guides(
+      colour = guide_legend(
+        direction = "horizontal",
+        title.position = "left",
+        label.position = "bottom"
+      )
+    ) +
+    theme_minimal() +
+    theme(
+      text = element_text(family = "base_font"),
+      panel.grid.major = element_blank(),
+      axis.text = element_blank(),
+      legend.position = "none",
+      legend.title = element_text(face = "bold", family = "base_font"),
+    )
+
+plot_b <-
+  plot_data |>
+    sf::st_drop_geometry() |>
+    group_by(region_natur) |>
+    count() |>
+    ggplot(aes(y = region_natur, x = n)) +
+    geom_col(aes(fill = region_natur), show.legend = FALSE) +
+    geom_label(aes(label = n), alpha = 0.5) +
+    scale_y_discrete(limits = rev) +
+    scale_fill_manual(values = colours_regions) +
+    scale_x_continuous(minor_breaks = scales::breaks_width(10)) +
+    labs(x = "Anzahl der Grundwassermessstellen") +
+    theme_minimal() +
+    theme(
+      axis.title.y = element_blank(),
+      axis.title.x = element_text(vjust = -5),
+      plot.margin = margin(0.5,0.5,1,0.5, "cm")
+    )
+
+p1 <- (plot_a | plot_b) +
+  # patchwork::plot_layout(tag_level = "new") +
+  patchwork::plot_annotation(tag_levels = "a") &
+  theme(
+    text = element_text(family = "base_font", size = 14)
+  )
+
+
+showtext::showtext_opts(dpi = 300)
+list(p1) |>
+  purrr::map2(
+    c("data_export/plot_map_locations") |> paste0(".pdf"),
+    ~ .x |> ggplot2::ggsave(
+      filename = .y, device = "pdf",
+      scale = 3, units = "cm", width = 8, height = 3.4, dpi = 300
+    )
+  )
+list(p1) |>
+  purrr::map2(
+    c("data_export/plot_map_locations") |> paste0(".png"),
+    ~ .x |> ggplot2::ggsave(
+      filename = .y, device = "png",
+      scale = 3, units = "cm", width = 8, height = 3.4, dpi = 300
+    )
+  )
+showtext::showtext_opts(dpi = 96)
+
 ###### Plot simple histogram
 plot_data <- observed_change_table |>
   add_indicator_names() |>
@@ -165,7 +258,7 @@ plot_list |>
     c("data_export/plot_maps_points") |> paste0(seq_along(plot_list), ".pdf"),
     ~ .x |> ggplot2::ggsave(
       filename = .y, device = "pdf",
-      scale = 2, units = "cm", width = 8, height = 10, dpi = 300
+      scale = 2, units = "cm", width = 8, height = 8, dpi = 300
     )
   )
 plot_list |>
@@ -173,7 +266,7 @@ plot_list |>
     c("data_export/plot_maps_points") |> paste0(seq_along(plot_list), ".png"),
     ~ .x |> ggplot2::ggsave(
       filename = .y, device = "png",
-      scale = 2, units = "cm", width = 8, height = 10, dpi = 300, bg = "white"
+      scale = 2, units = "cm", width = 8, height = 8, dpi = 300, bg = "white"
     )
   )
 showtext::showtext_opts(dpi = 96)
@@ -423,13 +516,13 @@ p1 <- plot_data |>
     climate_model_name,
     indicator, indicator_name,
     contains("absolute_change"),
-    region_climate
+    region_natur
   ) |>
   tidyr::pivot_longer(cols = contains("absolute_change"), names_to = "period") |>
   dplyr::mutate(period = period |> stringr::str_remove("absolute_change_z")) |>
   z_to_yearrange_period_names() |>
-  group_by(indicator, period, region_climate) |>
-  summarise(value = mean(value), region_climate = unique(region_climate), .groups = "drop") |>
+  group_by(indicator, period, region_natur) |>
+  summarise(value = mean(value), region_natur = unique(region_natur), .groups = "drop") |>
   mutate(month = stringr::str_remove(
     indicator, "indicator_33_mean_month"
   ) |>
@@ -446,7 +539,7 @@ p1 <- plot_data |>
   ) +
   scale_colour_manual(values = c("#E26831", "#829D36")) +
   scale_x_discrete(labels = month.abb) +
-  facet_grid(region_climate ~ period, labeller = ggplot2::label_wrap_gen(15)) +
+  facet_grid(region_natur ~ period, labeller = ggplot2::label_wrap_gen(15)) +
   labs(y = "Change of mean GWL [m]") +
   theme_minimal() +
   theme(
@@ -710,7 +803,11 @@ plot_data <- observed_change_table |>
   # group_by(well_id, region_climate) |>
   # mutate(value = value - mean(value)) |>
   dplyr::group_by(indicator, period, region_natur) |>
-  dplyr::summarise(value = mean(value), region_natur = unique(region_natur), .groups = "drop") |>
+  dplyr::summarise(
+    value = mean(value),
+    region_natur = unique(region_natur),
+    n_obs = dplyr::n() / length(unique(period)) / length(unique(climate_model_name)),
+    .groups = "drop") |>
   dplyr::mutate(month = stringr::str_remove(
     indicator, "indicator_33_mean_month"
   ) |>
@@ -740,7 +837,8 @@ plot_data_z1 <- indicators_summary_observed |>
     factor(levels = as.character(1:12))) |>
   dplyr::rename(period_z1 = period)
 
-plot_data <- plot_data |>
+plot_data <-
+  plot_data |>
   dplyr::left_join(plot_data_z1, by = c("indicator", "region_natur", "month")) |>
   dplyr::mutate(
     month = stringr::str_pad(month, 2, "left", pad = 0),
@@ -750,6 +848,10 @@ plot_data <- plot_data |>
     region_natur = factor(
       region_natur,
       levels = c("Inseln", "Marschen", "Niederungsgebiete", "Geestgebiete", "B\U00F6rden", "Bergland")
+    ),
+    region_natur = factor(
+      stringr::str_glue("{region_natur}<br>n = {n_obs}"),
+      levels = c("Inseln<br>n = 2", "Marschen<br>n = 2", "Niederungsgebiete<br>n = 134", "Geestgebiete<br>n = 102", "Börden<br>n = 2", "Bergland<br>n = 4")
     )
 )
 
@@ -789,7 +891,9 @@ p1 <- plot_data |>
       lineheight = 1.25,
       margin = ggplot2::margin(rep_len(3, 4))
     ),
-    strip.text.y = ggplot2::element_text(angle = 0),
+    strip.text.y = ggtext::element_markdown(
+      angle = 0,
+      margin = ggplot2::margin(rep_len(6, 4)), lineheight = 1.15),
     panel.spacing = unit(7, "mm"),
     panel.grid.minor.x = element_blank(),
     legend.title = element_blank(),
