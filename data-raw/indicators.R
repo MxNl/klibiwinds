@@ -32,7 +32,7 @@ indicators <-
       indicator = stringr::str_remove(indicator, "\\."),
       .after = id
     ) |>
-    dplyr::mutate(core_indicator = dplyr::if_else(id %in% c("1.1", "1.2", "2.1", "2.2", "1.7", "1.8", "3.1", "3.2"), TRUE, FALSE)) |>
-    dplyr::mutate(unit = c("m", "m", "m", "m", "m", "m", "m", "m", "Anzahl", "Anzahl", "Anzahl", "Anzahl", "Monat (hydr. Jahr)", "Monat (hydr. Jahr)", "m"))
+    dplyr::mutate(core_indicator = dplyr::if_else(id %in% c("1.1", "1.2", "2.1", "2.2", "1.7", "3.1", "3.2"), TRUE, FALSE)) |>
+    dplyr::mutate(unit = c("m", "m", "m", "m", "m", "m", "m", "m", "Anzahl", "Anzahl", "Anzahl", "Anzahl", "Monat", "Monat", "m"))
 
 usethis::use_data(indicators, overwrite = TRUE)

@@ -104,15 +104,20 @@ plot_data <- observed_change_table |>
   )
 
 colours_regions <- c(
-  "#7495b5",
-  "#9ec44d",
-  "#8d53c6",
-  "#bf653d",
-  "#7f9372",
-  "#924773"
+  "#690034",
+           "#9d8700",
+           "#803aac",
+           "#ff7f6d",
+           "#2a215c",
+           "#e8a3ff"
 )
 
-colours_regions <- c('#66c2a5','#fc8d62','#8da0cb','#e78ac3','#a6d854','#ffd92f')
+# colours_regions <- c("#c6614d",
+#                               "#9ec34f",
+#                               "#9346b0",
+#                               "#87b796",
+#                               "#4e3c3c",
+#                               "#9690be")
 
 plot_a <-
   ggplot() +
@@ -144,7 +149,7 @@ plot_b <-
     count() |>
     ggplot(aes(y = region_natur, x = n)) +
     geom_col(aes(fill = region_natur), show.legend = FALSE) +
-    geom_label(aes(label = n), alpha = 0.5) +
+    geom_label(aes(label = n), alpha = 0.5, nudge_x = 7) +
     scale_y_discrete(limits = rev) +
     scale_fill_manual(values = colours_regions) +
     scale_x_continuous(minor_breaks = scales::breaks_width(10)) +
