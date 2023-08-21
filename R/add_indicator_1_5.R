@@ -1,3 +1,12 @@
+#' add_indicator_1_5
+#'
+#' @param x tibble containing gwl level head time series
+#' @param y tibble containing the summary table
+#'
+#' @return
+#' @export
+#'
+#' @examples
 add_indicator_1_5 <- function(x, y) {
   indicator_15 <- y |>
     dplyr::group_by(

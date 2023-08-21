@@ -1,3 +1,12 @@
+#' add_indicator_3_3
+#'
+#' @param x tibble containing gwl level head time series
+#' @param y tibble containing the summary table
+#'
+#' @return
+#' @export
+#'
+#' @examples
 add_indicator_3_3 <- function(x, y) {
   indicator_33 <- y |>
     # slice_sample(prop = 0.01) |>

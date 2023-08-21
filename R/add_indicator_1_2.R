@@ -1,3 +1,12 @@
+#' add_indicator_1_2
+#'
+#' @param x tibble containing gwl level head time series
+#' @param y tibble containing the summary table
+#'
+#' @return
+#' @export
+#'
+#' @examples
 add_indicator_1_2 <- function(x, y) {
   indicator_12 <- y |>
     dplyr::group_by(well_id, climate_model_name, reference_period) |>

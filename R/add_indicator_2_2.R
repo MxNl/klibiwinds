@@ -1,3 +1,13 @@
+#' add_indicator_2_2
+#'
+#' @param x tibble containing gwl level head time series
+#' @param y tibble containing the summary table
+#' @param selected_reference_period default
+#'
+#' @return
+#' @export
+#'
+#' @examples
 add_indicator_2_2 <- function(x, y, selected_reference_period = "Z1") {
   if (!("indicator_16" %in% names(x))) {
     x_dep <- x |>

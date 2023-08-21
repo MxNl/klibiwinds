@@ -1,3 +1,12 @@
+#' add_indicator_3_2
+#'
+#' @param x tibble containing gwl level head time series
+#' @param y tibble containing the summary table
+#'
+#' @return
+#' @export
+#'
+#' @examples
 add_indicator_3_2 <- function(x, y) {
   indicator_32 <- y |>
     use_calendar_year() |>
@@ -10,7 +19,7 @@ add_indicator_3_2 <- function(x, y) {
       year = lubridate::year(date)
     ) |>
       dplyr::filter(
-        gwl == min(gwl, na.rm = TRUE)
+        gwl == max(gwl, na.rm = TRUE)
       ) |>
       dplyr::ungroup() |>
       dplyr::mutate(

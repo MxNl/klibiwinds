@@ -80,6 +80,9 @@ observed_change_table <-
 observed_change_table |> readr::write_csv2("data_export/result_absolute_changes_and_values.csv")
 
 # Plotting ----------------------------------------------------------
+library(ggplot2)
+library(dplyr)
+
 
 sysfonts::font_add_google("Abel", "base_font")
 showtext::showtext_auto()
@@ -92,9 +95,8 @@ regions_natur <- regions_natur |>
 
 ###### Plot map overview
 plot_data <- observed_change_table |>
-  distinct(well_id, .keep_all = TRUE) |>
+  dplyr::distinct(well_id, .keep_all = TRUE) |>
   add_indicator_names() |>
-  use_core_indicators_only() |>
   add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp"), as_sf = TRUE) |>
   dplyr::mutate(
     region_natur = factor(
@@ -192,7 +194,8 @@ showtext::showtext_opts(dpi = 96)
 plot_data <- observed_change_table |>
   add_indicator_names() |>
   use_core_indicators_only() |>
-  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp"))
+  add_geo_context(here::here("data_export", "klibiw7_gwmst_raumzuordnung.shp")) |>
+  dplyr::mutate(indicator_name = forcats::as_factor(indicator_name))
 
 p1 <- plot_data |>
   make_plot_simple_histogram(region_natur)
