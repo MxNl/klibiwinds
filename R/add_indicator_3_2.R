@@ -10,8 +10,6 @@
 add_indicator_3_2 <- function(x, y) {
   indicator_32 <- y |>
     use_calendar_year() |>
-    dplyr::select(-reference_period) |>
-    add_reference_period_column() |>
     dplyr::group_by(
       well_id,
       climate_model_name,
