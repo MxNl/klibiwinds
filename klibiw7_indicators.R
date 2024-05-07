@@ -14,7 +14,8 @@ data_gwl <- data_gwl |>
 
 data_gwl |> arrow::write_parquet("data_export/data_gwl.parquet")
 data_gwl <- arrow::read_parquet("data_export/data_gwl.parquet")
-data_gwl |> readr::write_csv2("data_export/result_gwl_historic_and_projected.csv")
+data_gwl |> dplyr::select(-nse, -r2) |> arrow::write_parquet("data_export/result_gwl_historic_and_projected.parquet")
+data_gwl |> dplyr::select(-nse, -r2) |> readr::write_csv2("data_export/result_gwl_historic_and_projected.csv")
 
 data_gwl_ref <- data_gwl |>
   filter_criterion_model_performance() |>
@@ -54,7 +55,7 @@ data_gwl |>
 
 indicators_summary <- data_gwl_ref |>
   make_summary_table() |>
-  add_indicators_all(data_gwl_ref)
+  add_indicators_all(data_gwl_ref, selected_reference_period = "Z2")
 
 indicators_summary <- indicators_summary |>
   unnest_indicator_3_3()

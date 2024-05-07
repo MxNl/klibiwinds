@@ -7,8 +7,8 @@ collect_data <- function(filepath_historic, filepath_projections) {
     unique()
 
   data_gwl_historic <- data_gwl_historic |>
-    dplyr::group_split(well_id) %>%
-    purrr::set_names(purrr::map_chr(., ~ .x$well_id[1])) |>
+    dplyr::group_split(well_id) |>
+    (\(x) purrr::set_names(x, purrr::map_chr(x, ~ .x$well_id[1])))() |>
     magrittr::extract(well_ids_projections) |>
     purrr::reduce(dplyr::bind_rows)
 
