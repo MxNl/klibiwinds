@@ -11,8 +11,8 @@ indicators <-
       "1.8	Gesamtamplitude",
       "2.1	Gesamtsumme der Niedrigstandsmonate",
       "2.2	Gesamtsumme der Hochstandsmonate",
-      "2.3	Anzahl der Jahre mit Hochstandssituation",
-      "2.4	Anzahl der Jahre mit Niedrigstandssituation",
+      "2.3	Anzahl der Jahre mit Niedrigstandssituation",
+      "2.4	Anzahl der Jahre mit Hochstandssituation",
       "3.1	Mittl. Eintrittszeitpunkt des Jahresminimums",
       "3.2	Mittl. Eintrittszeitpunkt des Jahresmaximums",
       "3.3	Mittlerer Jahresgang"
