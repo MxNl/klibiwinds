@@ -73,6 +73,7 @@ projections_change_table <-
     make_projections_change_table()
 
 projections_change_table |> readr::write_csv2("data_export/result_relative_changes.csv")
+projections_change_table <- readr::read_csv2("data_export/result_relative_changes.csv")
 
 observed_change_table <-
   indicators_summary_observed |>

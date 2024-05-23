@@ -15,7 +15,9 @@ indicators <-
       "2.4	Anzahl der Jahre mit Hochstandssituation",
       "3.1	Mittl. Eintrittszeitpunkt des Jahresminimums",
       "3.2	Mittl. Eintrittszeitpunkt des Jahresmaximums",
-      "3.3	Mittlerer Jahresgang"
+      "3.3	Mittlerer Jahresgang",
+      "3.4	Standardabw. des Mittl. Eintrittszeitpunktes des Jahresminimums",
+      "3.5	Standardabw. des Mittl. Eintrittszeitpunktes des Jahresmaximums"
     )
   ) |>
     tidyr::separate(indicator_id, sep = "\\t", into = c("id", "name")) |>
@@ -33,6 +35,6 @@ indicators <-
       .after = id
     ) |>
     dplyr::mutate(core_indicator = dplyr::if_else(id %in% c("1.5", "1.6", "2.1", "2.2", "1.7", "3.1", "3.2"), TRUE, FALSE)) |>
-    dplyr::mutate(unit = c("m", "m", "m", "m", "m", "m", "m", "m", "Anzahl", "Anzahl", "Anzahl", "Anzahl", "Monat", "Monat", "m"))
+    dplyr::mutate(unit = c("m", "m", "m", "m", "m", "m", "m", "m", "Anzahl", "Anzahl", "Anzahl", "Anzahl", "Monat", "Monat", "m", "Monat", "Monat"))
 
 usethis::use_data(indicators, overwrite = TRUE)

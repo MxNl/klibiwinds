@@ -5,7 +5,7 @@
 \alias{indicators}
 \title{indicators dataset}
 \format{
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 15 rows and 6 columns.
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 17 rows and 6 columns.
 }
 \usage{
 indicators
