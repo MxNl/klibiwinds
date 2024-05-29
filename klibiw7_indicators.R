@@ -55,7 +55,10 @@ data_gwl |>
 
 indicators_summary <- data_gwl_ref |>
   make_summary_table() |>
-  add_indicators_all(data_gwl_ref, selected_reference_period = "Z2")
+  add_indicators_gwdynindices_shape_scale(data_gwl_ref)
+  add_indicators_all(data_gwl_ref)
+  # add_indicators_gwdynindices(data_gwl_ref)
+  # add_indicators_klibiw(data_gwl_ref)
 
 indicators_summary <- indicators_summary |>
   unnest_indicator_3_3()
