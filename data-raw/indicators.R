@@ -37,7 +37,7 @@ indicators <-
     ) |>
     dplyr::mutate(
       indicator = stringr::str_glue("indicator_{id}"),
-      indicator = stringr::str_remove(indicator, "\\."),
+      indicator = stringr::str_remove_all(indicator, "\\."),
       .after = id
     ) |>
     dplyr::mutate(core_indicator = dplyr::if_else(id %in% c("1.5", "1.6", "2.1", "2.2", "1.7", "3.1", "3.2"), TRUE, FALSE)) |>
