@@ -2,11 +2,11 @@ indicators <-
   dplyr::tibble(
     indicator_id = c(
       "1.1	Grundwasser- tiefststand",
-      "1.2	Grundwasser- höchststand",
+      "1.2	Grundwasser- hoechststand",
       "1.3	Mittlerer Grundwasserstand",
       "1.4	Standardabweichung",
-      "1.5	Mittelwert der jährlichen Minima",
-      "1.6	Mittelwert der jährlichen Maxima",
+      "1.5	Mittelwert der jaehrlichen Minima",
+      "1.6	Mittelwert der jaehrlichen Maxima",
       "1.7	Mittlere Jahresamplitude",
       "1.8	Gesamtamplitude",
       "2.1	Gesamtsumme der Niedrigstandsmonate",
@@ -18,9 +18,9 @@ indicators <-
       "3.3	Mittlerer Jahresgang",
       "3.4	Standardabw. des Mittl. Eintrittszeitpunktes des Jahresminimums",
       "3.5	Standardabw. des Mittl. Eintrittszeitpunktes des Jahresmaximums",
-      "4.2.1.1	Timing der Saisonalität als Colwell's Kontingenz",
-      "6.1.3.1	Mittlere Dauer durchgehender Niedrigstände (20. Perzentil)",
-      "6.1.3.2	Mittlere Dauer durchgehender Hochstände (80. Perzentil)"
+      "4.2.1.1	Timing der Saisonalitaet als Colwell's Kontingenz",
+      "6.1.3.1	Mittlere Dauer durchgehender Niedrigstaende (20. Perzentil)",
+      "6.1.3.2	Mittlere Dauer durchgehender Hochstaende (80. Perzentil)"
     )
   ) |>
     tidyr::separate(indicator_id, sep = "\\t", into = c("id", "name")) |>
