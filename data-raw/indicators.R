@@ -35,6 +35,31 @@ indicators <-
         stringr::str_starts(id, "6") ~ "form"
       )
     ) |>
+  dplyr::mutate(
+    name_en = c(
+      "All period minimum level",
+      "All period maximum level",
+      "All period mean level",
+      "All period standard deviation",
+      "Mean of annual minimum levels",
+      "Mean of annual maximum levels",
+      "Mean annual amplitude",
+      "All period amplitude",
+      "Sum of low level months",
+      "Sum of high level months",
+      "Number of years with low level condition",
+      "Number of years with high level condition",
+      "Mean month of annual minimum occurance",
+      "Mean month of annual maximum occurance",
+      "Mean annual cycle",
+      "Std of mean month of annual minimum occurance",
+      "Std of mean month of annual maximum occurance",
+      "Timing of seasonality as Colwell's contingency",
+      "Mean duration of low pulses (20. percentile)",
+      "Mean duration of high pulses (80. percentile)"
+    ),
+    .after = name
+  ) |>
     dplyr::mutate(
       indicator = stringr::str_glue("indicator_{id}"),
       indicator = stringr::str_remove_all(indicator, "\\."),
