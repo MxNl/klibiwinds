@@ -27,9 +27,12 @@ indicators <-
     # dplyr::mutate(id = as.numeric(id)) |>
     dplyr::mutate(
       class = dplyr::case_when(
-        id < 2 ~ "allgemein",
-        id < 3 ~ "niedrig und hoechststand",
-        id < 4 ~ "saisonalitaet"
+        stringr::str_starts(id, "1") ~ "allgemein",
+        stringr::str_starts(id, "2") ~ "niedrig und hoechststand",
+        stringr::str_starts(id, "3") ~ "saisonalitaet",
+        stringr::str_starts(id, "4") ~ "struktur",
+        stringr::str_starts(id, "5") ~ "verteilung",
+        stringr::str_starts(id, "6") ~ "form"
       )
     ) |>
     dplyr::mutate(
